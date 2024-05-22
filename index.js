@@ -1,7 +1,7 @@
 let startBtn = document.getElementById('start');
 let interval;
 let resetBtn = document.getElementById('reset');
-let imgPaths = ['img/hawks_logo.png', 'img/lakers_logo.png', 'img/celtics_logo.png', 'img/spurs_logo.png', 'img/magic_logo.png', 'img/mavericks_logo.png', 'img/warriors_logo.png', 'img/bulls_logo.png']
+let images = ['img/hawks_logo.png', 'img/lakers_logo.png', 'img/celtics_logo.png', 'img/spurs_logo.png', 'img/magic_logo.png', 'img/mavericks_logo.png', 'img/warriors_logo.png', 'img/bulls_logo.png', 'img/76ers_logo.png', 'img/thunder_logo.png']
 let gameContainer = document.getElementById('game-container');
 let cards = [];
 
@@ -11,9 +11,25 @@ startBtn.addEventListener('click', function() {
 });
 
 function startGame() {
-    let shuffledCards = shuffleCards(imgPaths);
+    gameContainer.innerHTML = '';
+
+    let boardSize = document.getElementById('board-size').value;
+    let pickedImages = pickRandomImages(boardSize);
+    let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
     startTimer();
+}
+
+function pickRandomImages(boardSize) {
+    let randomImages = [];
+    let randomIndex;
+    while (randomImages.length < boardSize / 2) {
+        randomIndex = Math.floor(Math.random() * images.length);
+        if (!randomImages.includes(images[randomIndex])) {
+            randomImages.push(images[randomIndex]);
+        }
+    }
+    return randomImages;
 }
 
 function startTimer() {
