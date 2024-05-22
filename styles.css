@@ -93,6 +93,7 @@ body {
     transition: transform ease 0.5s;
     transform-style: preserve-3d;
     color: white;
+    cursor: pointer;
 }
 
 .card-front {
@@ -118,6 +119,6 @@ body {
     transform: rotateY(180deg);
 }
 
-.flipped {
+.flipped, .matched {
     transform: rotateY(180deg);
 }
