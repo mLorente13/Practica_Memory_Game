@@ -1,7 +1,14 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    height: 100%;
+    width: 100%;
 }
 
 .navbar {
@@ -49,7 +56,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     width: 70%;
-    margin: 3rem auto;
+    margin: 1.5rem auto;
 }
 
 .game-header {
@@ -79,14 +86,14 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1rem;
+    gap: .5rem;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 2rem;
 }
 
 .card {
     width: 23.5%;
-    height: 250px;
+    height: 200px;
     border-radius: 20px;
     background-color: #000;
     position: relative;

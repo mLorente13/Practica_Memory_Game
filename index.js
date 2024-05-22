@@ -57,10 +57,10 @@ function generateCards(shuffledCards) {
         gameContainer.innerHTML += `
             <div class="card flipped">
                 <div class="card-front">
-                   <img src="${path}" width="150" >
+                   <img src="${path}" width="100" >
                 </div>
                 <div class="card-back">
-                    <img src="img/nba-logo.png" alt="Card Back" height="250" >
+                    <img src="img/nba-logo.png" alt="Card Back" height="150" >
                 </div>
             </div>
         `;
