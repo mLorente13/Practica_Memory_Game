@@ -1,7 +1,9 @@
 let startBtn = document.getElementById('start');
 let interval;
 let resetBtn = document.getElementById('reset');
-let cards = ['fa-heart', 'fa-diamond', 'fa-paper-plane', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle']
+let imgPaths = ['img/hawks_logo.png', 'img/lakers_logo.png', 'img/celtics_logo.png', 'img/spurs_logo.png', 'img/magic_logo.png', 'fa-cube', 'fa-leaf', 'fa-bicycle']
+let gameContainer = document.getElementById('game-container');
+let cards = document.querySelectorAll('.card');
 
 startBtn.addEventListener('click', function() {
     startBtn.disabled = true;
@@ -9,9 +11,9 @@ startBtn.addEventListener('click', function() {
 });
 
 function startGame() {
-    let shuffledCards = shuffleCards(cards);
+    let shuffledCards = shuffleCards(imgPaths);
     generateCards(shuffledCards);
-    console.log(shuffledCards);
+    startTimer();
 }
 
 function startTimer() {
@@ -20,13 +22,12 @@ function startTimer() {
     interval = setInterval(() => {
         time++;
         timer.textContent = time;
-        console.log(time);
     }, 1000);
 }
 
-function shuffleCards(cards) {
+function shuffleCards(imgPaths) {
     let shuffledCards = [];
-    let cardsCopy = cards.slice();
+    let cardsCopy = [...imgPaths, ...imgPaths];
     while (cardsCopy.length > 0) {
         let randomIndex = Math.floor(Math.random() * cardsCopy.length);
         shuffledCards.push(cardsCopy[randomIndex]);
@@ -36,18 +37,29 @@ function shuffleCards(cards) {
 }
 
 function generateCards(shuffledCards) {
-    let gameContainer = document.getElementById('game-container');
-
-    shuffledCards.forEach(card => {
-        let cardElement = document.createElement('div');
-        cardElement.classList.add('card');
-        cardElement.innerHTML = `<i class="fa ${card}"></i>`;
-        gameContainer.appendChild(cardElement);
+    shuffledCards.forEach(path => {
+        gameContainer.innerHTML += `
+            <div class="card flipped">
+                <div class="card-front">
+                   <img src="${path}" width="150" >
+                </div>
+                <div class="card-back">
+                    <img src="img/nba-logo.png" alt="Card Back" height="250" >
+                </div>
+            </div>
+        `;
     });
+    setTimeout(() => {
+        let cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.classList.remove('flipped');
+        });
+    }, 3000);
 }
 
 resetBtn.addEventListener('click', function() {
     stopTimer();
+    gameContainer.innerHTML = '';
     console.log('Timer stopped');
 });
 
@@ -56,4 +68,18 @@ function stopTimer() {
     clearInterval(interval);
     startBtn.disabled = false;
     timer.textContent = 0;
+}
+
+cards.forEach(card => {
+    card.addEventListener('click', function() {
+        flipCard(card);
+    });
+});
+
+function flipCard(card) {
+    card.classList.add('flipped');
+    let flippedCards = document.querySelectorAll('.flipped');
+    if (flippedCards.length === 2) {
+        checkMatch(flippedCards);
+    }
 }
