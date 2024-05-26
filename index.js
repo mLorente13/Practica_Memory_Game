@@ -1,23 +1,60 @@
-let startBtn = document.getElementById('start');
+let startBtn = document.getElementById("start");
 let interval;
-let resetBtn = document.getElementById('reset');
-let images = ['img/hawks_logo.png', 'img/lakers_logo.png', 'img/celtics_logo.png', 'img/spurs_logo.png', 'img/magic_logo.png', 'img/mavericks_logo.png', 'img/warriors_logo.png', 'img/bulls_logo.png', 'img/76ers_logo.png', 'img/thunder_logo.png']
-let gameContainer = document.getElementById('game-container');
-let cards = [];
+let resetBtn = document.getElementById("reset");
+let images = [
+    "img/hawks_logo.png",
+    "img/lakers_logo.png",
+    "img/celtics_logo.png",
+    "img/spurs_logo.png",
+    "img/magic_logo.png",
+    "img/mavericks_logo.png",
+    "img/warriors_logo.png",
+    "img/bulls_logo.png",
+    "img/76ers_logo.png",
+    "img/thunder_logo.png",
+];
+let gameContainer = document.getElementById("game-container");
+let aiTurn = false;
+let iaMemory = new Map();
 
-startBtn.addEventListener('click', function() {
-    startBtn.disabled = true;
-    startGame()
+startBtn.addEventListener("click", function () {
+    startGame();
 });
 
 function startGame() {
-    gameContainer.innerHTML = '';
+    gameContainer.innerHTML = "";
 
-    let boardSize = document.getElementById('board-size').value;
+    let boardSize = document.getElementById("board-size").value;
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
     startTimer();
+    game();
+}
+
+function game() {
+    let cards = document.querySelectorAll(".card");
+    if (aiTurn === false) {
+        cards.forEach((card) => {
+            card.addEventListener("click", function () {
+                flipCard(card);
+                setTimeout(() => {}, 1000);
+            });
+        });
+    } else {
+        iaMemory.forEach((value, key) => {
+            if (value.length === 2) {
+                let card1 = document.querySelector(`[data-position="${value[0]}"]`);
+                let card2 = document.querySelector(`[data-position="${value[1]}"]`);
+                flipCard(card1);
+                flipCard(card2);
+                iaMemory.delete(key);
+            } else {
+                let card = document.querySelector(`[data-position="${value[0]}"]`);
+                flipCard(card);
+            }
+        });
+    }
 }
 
 function pickRandomImages(boardSize) {
@@ -34,7 +71,7 @@ function pickRandomImages(boardSize) {
 
 function startTimer() {
     let time = 0;
-    let timer = document.getElementById('timer');
+    let timer = document.getElementById("timer");
     interval = setInterval(() => {
         time++;
         timer.textContent = time;
@@ -53,95 +90,108 @@ function shuffleCards(imgPaths) {
 }
 
 function generateCards(shuffledCards) {
-    shuffledCards.forEach(path => {
-        let cardAlt = path.split('/')[1].split('_')[0].split('.')[0];
+    let index = 0;
+    shuffledCards.forEach((path) => {
+        let cardAlt = path.split("/")[1].split("_")[0].split(".")[0];
         gameContainer.innerHTML += `
-            <div class="card flipped">
+            <div class="card flipped" data-position="${index}">
                 <div class="card-front">
-                   <img src="${path}" alt="${cardAlt}" width="100" >
+                   <img src="${path}" alt="${cardAlt}" width="100" />
                 </div>
                 <div class="card-back">
-                    <img src="img/nba-logo.png" alt="Card Back" height="150" >
+                    <img src="img/nba-logo.png" alt="Card Back" height="150" />
                 </div>
             </div>
         `;
+        index++;
     });
-    cards = document.querySelectorAll('.card');
+    cards = document.querySelectorAll(".card");
     setTimeout(() => {
-        cards.forEach(card => {
-            card.classList.remove('flipped');
+        cards.forEach((card) => {
+            card.classList.remove("flipped");
         });
     }, 3000);
     return cards;
 }
 
-resetBtn.addEventListener('click', function() {
+resetBtn.addEventListener("click", function () {
     stopTimer();
-    gameContainer.innerHTML = '';
+    gameContainer.innerHTML = "";
 });
 
 function stopTimer() {
-    let timer = document.getElementById('timer');
+    let timer = document.getElementById("timer");
     clearInterval(interval);
     startBtn.disabled = false;
     timer.textContent = 0;
 }
 
-gameContainer.addEventListener('click', function(event) {
-    let clickedCard = event.target.closest('.card');
-    if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('matched')) {
-        return;
-    }
-    flipCard(clickedCard);
-});
-
 function flipCard(card) {
-    card.classList.add('flipped');
-    let flippedCards = document.querySelectorAll('.flipped');
+    card.classList.add("flipped");
+    let flippedCards = document.querySelectorAll(".flipped");
     if (flippedCards.length === 2) {
         checkMatch(flippedCards);
     }
+    saveCardOnMemory(card);
+}
+
+function saveCardOnMemory(card) {
+    let key = card.querySelector("img").alt;
+    let value = card.dataset.position;
+    let memoryFail = Math.random() < 0.5;
+    console.log(memoryFail);
+    console.log(iaMemory);
+    if (!memoryFail) {
+        if (iaMemory.has(key) && iaMemory.get(key).length < 2) {
+            let values = iaMemory.get(key);
+            values.push(value);
+            iaMemory.set(key, values);
+        } else {
+            iaMemory.set(key, [value]);
+        }
+    }
+
 }
 
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
     if (firstCard.innerHTML === secondCard.innerHTML) {
-        flippedCards.forEach(card => {
-            card.classList.add('matched');
-            card.classList.remove('flipped');
-            card.removeEventListener('click', function() {
+        flippedCards.forEach((card) => {
+            card.classList.add("matched");
+            card.classList.remove("flipped");
+            card.removeEventListener("click", function () {
                 flipCard(card);
             });
-            
         });
-        addPlayToGameLog(firstCard, 'match', 'human');
+        addPlayToGameLog(firstCard, "match", "human");
         checkGameEnd();
     } else {
         setTimeout(() => {
-            flippedCards.forEach(card => {
-                card.classList.remove('flipped');
+            flippedCards.forEach((card) => {
+                card.classList.remove("flipped");
             });
         }, 1000);
+        aiTurn = true;
     }
 }
 
 function addPlayToGameLog(card, play, player) {
-    let cardAlt = card.querySelector('img').alt;
-    let gameLog = document.getElementById('game-log');    
+    let cardAlt = card.querySelector("img").alt;
+    let gameLog = document.getElementById("game-log");
     gameLog.textContent += `player: ${player} found ${cardAlt} pair!\n`;
 }
 
 function checkGameEnd() {
-    let matchedCards = document.querySelectorAll('.matched');
+    let matchedCards = document.querySelectorAll(".matched");
     if (matchedCards.length === cards.length) {
         stopTimer();
         setTimeout(() => {
             confetti({
                 particleCount: 1000,
                 spread: 150,
-                origin: { y: 0.6 }
-              });
+                origin: { y: 0.6 },
+            });
         }, 500);
     }
 }
