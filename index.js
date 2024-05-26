@@ -54,10 +54,11 @@ function shuffleCards(imgPaths) {
 
 function generateCards(shuffledCards) {
     shuffledCards.forEach(path => {
+        let cardAlt = path.split('/')[1].split('_')[0].split('.')[0];
         gameContainer.innerHTML += `
             <div class="card flipped">
                 <div class="card-front">
-                   <img src="${path}" width="100" >
+                   <img src="${path}" alt="${cardAlt}" width="100" >
                 </div>
                 <div class="card-back">
                     <img src="img/nba-logo.png" alt="Card Back" height="150" >
@@ -112,8 +113,10 @@ function checkMatch(flippedCards) {
             card.removeEventListener('click', function() {
                 flipCard(card);
             });
-            checkGameEnd();
+            
         });
+        addPlayToGameLog(firstCard, 'match', 'human');
+        checkGameEnd();
     } else {
         setTimeout(() => {
             flippedCards.forEach(card => {
@@ -121,6 +124,12 @@ function checkMatch(flippedCards) {
             });
         }, 1000);
     }
+}
+
+function addPlayToGameLog(card, play, player) {
+    let cardAlt = card.querySelector('img').alt;
+    let gameLog = document.getElementById('game-log');    
+    gameLog.textContent += `player: ${player} found ${cardAlt} pair!\n`;
 }
 
 function checkGameEnd() {
