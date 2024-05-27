@@ -23,38 +23,55 @@ startBtn.addEventListener("click", function () {
 
 function startGame() {
     gameContainer.innerHTML = "";
-
     let boardSize = document.getElementById("board-size").value;
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
+    displayCards(cards);
     startTimer();
-    game();
+    game(aiTurn);
+}
+function displayCards(cards) {
+    cards.forEach((card) => {
+        card.addEventListener("click", function () {
+            flipCard(card);
+        });
+    });
 }
 
-function game() {
-    let cards = document.querySelectorAll(".card");
-    if (aiTurn === false) {
-        cards.forEach((card) => {
-            card.addEventListener("click", function () {
-                flipCard(card);
-                setTimeout(() => {}, 1000);
-            });
-        });
-    } else {
-        iaMemory.forEach((value, key) => {
-            if (value.length === 2) {
-                let card1 = document.querySelector(`[data-position="${value[0]}"]`);
-                let card2 = document.querySelector(`[data-position="${value[1]}"]`);
-                flipCard(card1);
-                flipCard(card2);
-                iaMemory.delete(key);
-            } else {
-                let card = document.querySelector(`[data-position="${value[0]}"]`);
-                flipCard(card);
-            }
-        });
+function game(isAiTurn) {
+    setTimeout(() => {
+        let cards = document.querySelectorAll(".card");
+        let pickedCards = [];
+        if (isAiTurn) {
+            gameContainer.style.pointerEvents = "none";
+            aiPlay(cards, pickedCards);
+        } else {
+            gameContainer.style.pointerEvents = "auto";
+        }
+    }, 1000); 
+}
+
+function aiPlay(cards, pickedCards) {
+    pickedCards.push(pickRandomCard(cards));
+    pickedCards.push(pickRandomCard(cards));
+    flipCard(pickedCards[0]);
+    setTimeout(() => {
+        flipCard(pickedCards[1]);
+    }, 500);
+}
+
+function getCardByPosition(cards, position) {
+    let card = [...cards].find((card) => card.dataset.position == position);
+    return card;
+}
+
+function pickRandomCard(cards) {
+    let randomIndex = Math.floor(Math.random() * cards.length);
+    if (cards[randomIndex].classList.contains("matched") || cards[randomIndex].classList.contains("flipped")) {
+        return pickRandomCard(cards);
     }
+    return cards[randomIndex];
 }
 
 function pickRandomImages(boardSize) {
@@ -139,8 +156,6 @@ function saveCardOnMemory(card) {
     let key = card.querySelector("img").alt;
     let value = card.dataset.position;
     let memoryFail = Math.random() < 0.5;
-    console.log(memoryFail);
-    console.log(iaMemory);
     if (!memoryFail) {
         if (iaMemory.has(key) && iaMemory.get(key).length < 2) {
             let values = iaMemory.get(key);
@@ -150,30 +165,33 @@ function saveCardOnMemory(card) {
             iaMemory.set(key, [value]);
         }
     }
-
 }
 
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
-    if (firstCard.innerHTML === secondCard.innerHTML) {
-        flippedCards.forEach((card) => {
-            card.classList.add("matched");
-            card.classList.remove("flipped");
-            card.removeEventListener("click", function () {
-                flipCard(card);
+    setTimeout(() => {
+        if (firstCard.innerHTML === secondCard.innerHTML) {
+            flippedCards.forEach((card) => {
+                card.classList.add("matched");
+                card.classList.remove("flipped");
+                setTimeout(() => {
+                    card.removeEventListener("click", function () {
+                        flipCard(card);
+                    });
+                }, 3000);
             });
-        });
-        addPlayToGameLog(firstCard, "match", "human");
-        checkGameEnd();
-    } else {
-        setTimeout(() => {
+            addPlayToGameLog(firstCard, "match", "human");
+            checkGameEnd();
+        } else {
             flippedCards.forEach((card) => {
                 card.classList.remove("flipped");
             });
-        }, 1000);
-        aiTurn = true;
-    }
+        }
+        flippedCards = [];
+        aiTurn = !aiTurn;
+        game(aiTurn);
+    }, 1000);
 }
 
 function addPlayToGameLog(card, play, player) {
