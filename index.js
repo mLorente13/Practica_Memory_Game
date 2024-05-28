@@ -49,7 +49,7 @@ function game(isAiTurn) {
 function aiPlay(cards, pickedCards) {
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
     console.log(iaMemory);
-    console.log(memoryContainsPair);
+    console.log("Memory has pair", memoryContainsPair);
     if (!memoryContainsPair) {
         pickedCards.push(pickRandomCard(cards, pickedCards));
         pickedCards.push(pickRandomCard(cards, pickedCards));
@@ -69,6 +69,8 @@ function checkMemoryForPair(cards, pickedCards) {
     memoryKeys.forEach((key) => {
         let values = iaMemory.get(key);
         if (values.length === 2) {
+            console.log(values[0]);
+            console.log(values[1]);
             let firstCard = cards[values[0]];
             let secondCard = cards[values[1]];
             if (!firstCard.classList.contains("flipped") && !firstCard.classList.contains("matched")) {
@@ -174,7 +176,6 @@ function stopTimer() {
 }
 
 function flipCard(card) {
-    console.log(card);
     card.classList.add("flipped");
     let flippedCards = document.querySelectorAll(".flipped");
     if (flippedCards.length === 2) {
@@ -188,7 +189,7 @@ function saveCardOnMemory(card) {
     let value = card.dataset.position;
     let memoryFail = Math.random() < 0.5;
     if (!memoryFail) {
-        if (iaMemory.has(key) && iaMemory.get(key).length < 2) {
+        if (iaMemory.has(key) && iaMemory.get(key).length < 2 && iaMemory.get(key)[0] !== value) {
             let values = iaMemory.get(key);
             values.push(value);
             iaMemory.set(key, values);
@@ -201,9 +202,11 @@ function saveCardOnMemory(card) {
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
+    let gameEnd = false;
     let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
             flippedCards.forEach((card) => {
+                removeFromMemory(card);
                 card.classList.add("matched");
                 card.classList.remove("flipped");
                 setTimeout(() => {
@@ -213,7 +216,10 @@ function checkMatch(flippedCards) {
                 }, 3000);
             });
             addPlayToGameLog(firstCard, "match", aiTurn ? "AI" : "Human");
-            checkGameEnd();
+            gameEnd = checkGameEnd();
+            if (gameEnd) {
+                return;
+            }
         } else {
             flippedCards.forEach((card) => {
                 card.classList.remove("flipped");
@@ -224,6 +230,13 @@ function checkMatch(flippedCards) {
         game(aiTurn);
     }, 1000);
     aiTimeouts.push(matchTimeout);
+}
+
+function removeFromMemory(card) {
+    let key = card.querySelector("img").alt;
+    if (iaMemory.has(key)) {
+        iaMemory.delete(key);
+    }
 }
 
 function addPlayToGameLog(card, play, player) {
@@ -243,5 +256,7 @@ function checkGameEnd() {
                 origin: { y: 0.6 },
             });
         }, 500);
+        return true;
     }
+    return false;
 }
