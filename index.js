@@ -16,6 +16,7 @@ let images = [
 let gameContainer = document.getElementById("game-container");
 let aiTurn = false;
 let iaMemory = new Map();
+let aiTimeouts = [];
 
 startBtn.addEventListener("click", function () {
     startGame();
@@ -31,6 +32,7 @@ function startGame() {
     startTimer();
     game(aiTurn);
 }
+
 function displayCards(cards) {
     cards.forEach((card) => {
         card.addEventListener("click", function () {
@@ -40,7 +42,7 @@ function displayCards(cards) {
 }
 
 function game(isAiTurn) {
-    setTimeout(() => {
+    let gameTimeout = setTimeout(() => {
         let cards = document.querySelectorAll(".card");
         let pickedCards = [];
         if (isAiTurn) {
@@ -50,28 +52,27 @@ function game(isAiTurn) {
             gameContainer.style.pointerEvents = "auto";
         }
     }, 1000); 
+    aiTimeouts.push(gameTimeout);
 }
 
 function aiPlay(cards, pickedCards) {
     pickedCards.push(pickRandomCard(cards));
     pickedCards.push(pickRandomCard(cards));
     flipCard(pickedCards[0]);
-    setTimeout(() => {
+    let flipTimeout = setTimeout(() => {
         flipCard(pickedCards[1]);
     }, 500);
-}
-
-function getCardByPosition(cards, position) {
-    let card = [...cards].find((card) => card.dataset.position == position);
-    return card;
+    aiTimeouts.push(flipTimeout);
 }
 
 function pickRandomCard(cards) {
-    let randomIndex = Math.floor(Math.random() * cards.length);
-    if (cards[randomIndex].classList.contains("matched") || cards[randomIndex].classList.contains("flipped")) {
-        return pickRandomCard(cards);
-    }
-    return cards[randomIndex];
+    let randomIndex;
+    let card;
+    do {
+        randomIndex = Math.floor(Math.random() * cards.length);
+        card = cards[randomIndex];
+    } while (card && (card.classList.contains("matched") || card.classList.contains("flipped")));
+    return card;
 }
 
 function pickRandomImages(boardSize) {
@@ -134,6 +135,11 @@ function generateCards(shuffledCards) {
 resetBtn.addEventListener("click", function () {
     stopTimer();
     gameContainer.innerHTML = "";
+    aiTimeouts.forEach(timeout => clearTimeout(timeout)); // Clear all AI timeouts
+    aiTimeouts = []; // Reset the timeouts array
+    iaMemory.clear(); // Clear AI memory
+    aiTurn = false; // Reset AI turn
+    startBtn.disabled = false;
 });
 
 function stopTimer() {
@@ -170,7 +176,7 @@ function saveCardOnMemory(card) {
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
-    setTimeout(() => {
+    let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
             flippedCards.forEach((card) => {
                 card.classList.add("matched");
@@ -181,7 +187,7 @@ function checkMatch(flippedCards) {
                     });
                 }, 3000);
             });
-            addPlayToGameLog(firstCard, "match", "human");
+            addPlayToGameLog(firstCard, "match", aiTurn ? "AI" : "Human");
             checkGameEnd();
         } else {
             flippedCards.forEach((card) => {
@@ -192,6 +198,7 @@ function checkMatch(flippedCards) {
         aiTurn = !aiTurn;
         game(aiTurn);
     }, 1000);
+    aiTimeouts.push(matchTimeout);
 }
 
 function addPlayToGameLog(card, play, player) {
