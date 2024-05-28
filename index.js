@@ -25,6 +25,8 @@ startBtn.addEventListener("click", function () {
 function startGame() {
     gameContainer.innerHTML = "";
     let boardSize = document.getElementById("board-size").value;
+    AIDifficulty = document.getElementById("difficulty").value;
+    console.log("AIDifficulty: ", AIDifficulty);
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
@@ -48,12 +50,12 @@ function game(isAiTurn) {
 
 function aiPlay(cards, pickedCards) {
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
-    console.log(iaMemory);
-    console.log("Memory has pair", memoryContainsPair);
+    let memoryContainsCard = checkMemoryForCard(cards, pickedCards, memoryContainsPair);
     if (!memoryContainsPair) {
         pickedCards.push(pickRandomCard(cards, pickedCards));
         pickedCards.push(pickRandomCard(cards, pickedCards));
-        console.log(pickedCards);
+    } else if (memoryContainsCard) {
+        pickedCards.push(pickRandomCard(cards, pickedCards));
     }
     
     flipCard(pickedCards[0]);
@@ -69,8 +71,6 @@ function checkMemoryForPair(cards, pickedCards) {
     memoryKeys.forEach((key) => {
         let values = iaMemory.get(key);
         if (values.length === 2) {
-            console.log(values[0]);
-            console.log(values[1]);
             let firstCard = cards[values[0]];
             let secondCard = cards[values[1]];
             if (!firstCard.classList.contains("flipped") && !firstCard.classList.contains("matched")) {
@@ -84,6 +84,24 @@ function checkMemoryForPair(cards, pickedCards) {
         }
     });
     return memoryContainsPair;
+}
+
+function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
+    let memoryContainsCard = false;
+    if (!memoryContainsPair) {
+        let memoryKeys = Array.from(iaMemory.keys());
+        memoryKeys.forEach((key) => {
+            let values = iaMemory.get(key);
+            if (values.length === 1) {
+                let card = cards[values[0]];
+                if (!card.classList.contains("flipped") && !card.classList.contains("matched")) {
+                    pickedCards.push(card);
+                    memoryContainsCard = true;
+                }
+            }
+        });
+    }
+    return memoryContainsCard;
 }
 
 function pickRandomCard(cards, pickedCards) {
@@ -187,8 +205,8 @@ function flipCard(card) {
 function saveCardOnMemory(card) {
     let key = card.querySelector("img").alt;
     let value = card.dataset.position;
-    let memoryFail = Math.random() < 0.5;
-    if (!memoryFail) {
+    let memoryHasFailed = checkMemoryFailure(AIDifficulty)
+    if (!memoryHasFailed) {
         if (iaMemory.has(key) && iaMemory.get(key).length < 2 && iaMemory.get(key)[0] !== value) {
             let values = iaMemory.get(key);
             values.push(value);
@@ -199,6 +217,23 @@ function saveCardOnMemory(card) {
     }
 }
 
+function checkMemoryFailure(difficulty) {
+    if (difficulty === "easy") {
+        return Math.random() < 0.5;
+    } else if (difficulty === "medium") {
+        return Math.random() < 0.3;
+    } else if (difficulty === "hard") {
+        return Math.random() < 0.1;
+    }
+}
+
+function removeCardsFromMemory(card) {
+    let key = card.querySelector("img").alt;
+    if (iaMemory.has(key)) {
+        iaMemory.delete(key);
+    }
+}
+
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
@@ -206,7 +241,7 @@ function checkMatch(flippedCards) {
     let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
             flippedCards.forEach((card) => {
-                removeFromMemory(card);
+                removeCardsFromMemory(card);
                 card.classList.add("matched");
                 card.classList.remove("flipped");
                 setTimeout(() => {
@@ -230,13 +265,6 @@ function checkMatch(flippedCards) {
         game(aiTurn);
     }, 1000);
     aiTimeouts.push(matchTimeout);
-}
-
-function removeFromMemory(card) {
-    let key = card.querySelector("img").alt;
-    if (iaMemory.has(key)) {
-        iaMemory.delete(key);
-    }
 }
 
 function addPlayToGameLog(card, play, player) {
