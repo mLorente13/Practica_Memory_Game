@@ -28,17 +28,8 @@ function startGame() {
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
-    displayCards(cards);
     startTimer();
     game(aiTurn);
-}
-
-function displayCards(cards) {
-    cards.forEach((card) => {
-        card.addEventListener("click", function () {
-            flipCard(card);
-        });
-    });
 }
 
 function game(isAiTurn) {
@@ -51,7 +42,7 @@ function game(isAiTurn) {
         } else {
             gameContainer.style.pointerEvents = "auto";
         }
-    }, 1000); 
+    }, 500); 
     aiTimeouts.push(gameTimeout);
 }
 
@@ -66,13 +57,10 @@ function aiPlay(cards, pickedCards) {
 }
 
 function pickRandomCard(cards) {
-    let randomIndex;
-    let card;
-    do {
-        randomIndex = Math.floor(Math.random() * cards.length);
-        card = cards[randomIndex];
-    } while (card && (card.classList.contains("matched") || card.classList.contains("flipped")));
-    return card;
+    cards = [...cards].filter((card) => !card.classList.contains("flipped"));
+    cards = [...cards].filter((card) => !card.classList.contains("matched"));
+    let randomIndex = Math.floor(Math.random() * cards.length);
+    return cards[randomIndex];
 }
 
 function pickRandomImages(boardSize) {
@@ -129,6 +117,13 @@ function generateCards(shuffledCards) {
             card.classList.remove("flipped");
         });
     }, 3000);
+    cards.forEach((card) => {
+        card.addEventListener("click", function () {
+            if (!aiTurn) {
+                flipCard(card);
+            }
+        });
+    });
     return cards;
 }
 
@@ -150,6 +145,7 @@ function stopTimer() {
 }
 
 function flipCard(card) {
+    console.log(card);
     card.classList.add("flipped");
     let flippedCards = document.querySelectorAll(".flipped");
     if (flippedCards.length === 2) {
