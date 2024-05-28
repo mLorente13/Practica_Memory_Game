@@ -48,6 +48,8 @@ function game(isAiTurn) {
 
 function aiPlay(cards, pickedCards) {
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
+    console.log(iaMemory);
+    console.log(memoryContainsPair);
     if (!memoryContainsPair) {
         pickedCards.push(pickRandomCard(cards, pickedCards));
         pickedCards.push(pickRandomCard(cards, pickedCards));
@@ -76,19 +78,16 @@ function checkMemoryForPair(cards, pickedCards) {
                 pickedCards.push(secondCard);
             }
             memoryContainsPair = true;
+            iaMemory.delete(key);
         }
     });
     return memoryContainsPair;
 }
 
 function pickRandomCard(cards, pickedCards) {
-    console.log(pickedCards);
     cards = [...cards].filter((card) => !card.classList.contains("flipped"));
     cards = [...cards].filter((card) => !card.classList.contains("matched"));
     cards = [...cards].filter((card) => pickedCards.indexOf(card) === -1);
-    cards.forEach((card) => {
-        console.log(card.dataset.position);
-    });
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
