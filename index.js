@@ -47,8 +47,13 @@ function game(isAiTurn) {
 }
 
 function aiPlay(cards, pickedCards) {
-    pickedCards.push(pickRandomCard(cards));
-    pickedCards.push(pickRandomCard(cards));
+    let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
+    if (!memoryContainsPair) {
+        pickedCards.push(pickRandomCard(cards, pickedCards));
+        pickedCards.push(pickRandomCard(cards, pickedCards));
+        console.log(pickedCards);
+    }
+    
     flipCard(pickedCards[0]);
     let flipTimeout = setTimeout(() => {
         flipCard(pickedCards[1]);
@@ -56,9 +61,34 @@ function aiPlay(cards, pickedCards) {
     aiTimeouts.push(flipTimeout);
 }
 
-function pickRandomCard(cards) {
+function checkMemoryForPair(cards, pickedCards) {
+    let memoryContainsPair = false;
+    let memoryKeys = Array.from(iaMemory.keys());
+    memoryKeys.forEach((key) => {
+        let values = iaMemory.get(key);
+        if (values.length === 2) {
+            let firstCard = cards[values[0]];
+            let secondCard = cards[values[1]];
+            if (!firstCard.classList.contains("flipped") && !firstCard.classList.contains("matched")) {
+                pickedCards.push(firstCard);
+            }
+            if (!secondCard.classList.contains("flipped") && !secondCard.classList.contains("matched")) {
+                pickedCards.push(secondCard);
+            }
+            memoryContainsPair = true;
+        }
+    });
+    return memoryContainsPair;
+}
+
+function pickRandomCard(cards, pickedCards) {
+    console.log(pickedCards);
     cards = [...cards].filter((card) => !card.classList.contains("flipped"));
     cards = [...cards].filter((card) => !card.classList.contains("matched"));
+    cards = [...cards].filter((card) => pickedCards.indexOf(card) === -1);
+    cards.forEach((card) => {
+        console.log(card.dataset.position);
+    });
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
