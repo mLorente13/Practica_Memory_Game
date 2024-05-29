@@ -95,8 +95,8 @@ body {
 }
 
 .card {
-    width: 23.5%;
-    height: 200px;
+    width: 20%;
+    height: 125px;
     border-radius: 20px;
     background-color: #000;
     position: relative;
@@ -152,4 +152,12 @@ body {
     width: 100%;
     resize: none;
     line-height: 1.5rem;
+}
+
+.Human {
+    background-color: #00ba09;
+}
+
+.AI {
+    background-color: #ff0000;
 }

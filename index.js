@@ -26,10 +26,10 @@ function startGame() {
     gameContainer.innerHTML = "";
     let boardSize = document.getElementById("board-size").value;
     AIDifficulty = document.getElementById("difficulty").value;
-    console.log("AIDifficulty: ", AIDifficulty);
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     cards = generateCards(shuffledCards);
+    stopTimer();
     startTimer();
     game(aiTurn);
 }
@@ -154,7 +154,7 @@ function generateCards(shuffledCards) {
                    <img src="${path}" alt="${cardAlt}" width="100" />
                 </div>
                 <div class="card-back">
-                    <img src="img/nba-logo.png" alt="Card Back" height="150" />
+                    <img src="img/nba-logo.png" alt="Card Back" height="125" />
                 </div>
             </div>
         `;
@@ -179,7 +179,8 @@ function generateCards(shuffledCards) {
 resetBtn.addEventListener("click", function () {
     stopTimer();
     gameContainer.innerHTML = "";
-    aiTimeouts.forEach(timeout => clearTimeout(timeout)); // Clear all AI timeouts
+    aiTimeouts.forEach(timeout => clearTimeout(timeout));
+    stopTimer();
     aiTimeouts = []; // Reset the timeouts array
     iaMemory.clear(); // Clear AI memory
     aiTurn = false; // Reset AI turn
@@ -270,7 +271,7 @@ function checkMatch(flippedCards) {
 function addPlayToGameLog(card, play, player) {
     let cardAlt = card.querySelector("img").alt;
     let gameLog = document.getElementById("game-log");
-    gameLog.textContent += `player: ${player} found ${cardAlt} pair!\n`;
+    gameLog.textContent += `${player} played ${play} with ${cardAlt}\n`;
 }
 
 function checkGameEnd() {
