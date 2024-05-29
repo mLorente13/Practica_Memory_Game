@@ -33,8 +33,17 @@ function startGame() {
     let showCards = document.getElementById("flip-cards").checked;
     cards = generateCards(shuffledCards, showCards);
     stopTimer();
+    resetScores();
     startTimer();
     game(aiTurn);
+}
+
+function resetScores() {
+    humanPairsFound = 0;
+    aiPairsFound = 0;
+    printPairsScore(humanPairsFound, aiPairsFound);
+    let gameLog = document.getElementById("game-log");
+    gameLog.textContent = "";
 }
 
 function game(isAiTurn) {
