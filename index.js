@@ -17,6 +17,8 @@ let gameContainer = document.getElementById("game-container");
 let aiTurn = false;
 let iaMemory = new Map();
 let aiTimeouts = [];
+let humanPairsFound = 0;
+let aiPairsFound = 0;
 
 startBtn.addEventListener("click", function () {
     startGame();
@@ -47,6 +49,13 @@ function game(isAiTurn) {
         }
     }, 500); 
     aiTimeouts.push(gameTimeout);
+}
+
+function printPairsScore(humanPairsFound, aiPairsFound) {
+    let humanScore = document.getElementById("human-score");
+    let aiScore = document.getElementById("ai-score");
+    humanScore.textContent = humanPairsFound;
+    aiScore.textContent = aiPairsFound;
 }
 
 function aiPlay(cards, pickedCards) {
@@ -252,6 +261,12 @@ function checkMatch(flippedCards) {
                     });
                 }, 3000);
             });
+            if (aiTurn) {
+                aiPairsFound++;
+            } else {
+                humanPairsFound++;
+            }
+            printPairsScore(humanPairsFound, aiPairsFound);
             addPlayToGameLog(firstCard, "match", aiTurn ? "AI" : "Human");
             gameEnd = checkGameEnd();
             if (gameEnd) {
