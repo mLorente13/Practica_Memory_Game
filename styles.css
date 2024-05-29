@@ -55,7 +55,7 @@ body {
 .container {
     display: flex;
     flex-wrap: wrap;
-    width: 90%;
+    width: 80%;
     margin: 1.5rem auto;
     box-sizing: border-box;
 }
@@ -89,14 +89,14 @@ body {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem;
-    width: 80%;
-    margin-top: 2rem;
+    width: 60%;
+    margin-top: 1rem;
     margin-right: .5rem;
 }
 
 .card {
-    width: 20%;
-    height: 125px;
+    width: 23%;
+    height: 150px;
     border-radius: 20px;
     background-color: #000;
     position: relative;
@@ -136,6 +136,8 @@ body {
 }
 
 .game-options {
+    display: flex;
+    align-items: center;
     width: 100%;
 }
 
@@ -143,21 +145,54 @@ body {
     height: 100%;
     display: inline;
     resize: none;
-    width: 19%;
-    margin-top: 2rem;
+    width: 25%;
+    margin: 1rem 0 0 2rem;
 }
 
 .game-log textarea {
-    height: 500px;
+    height: 450px;
     width: 100%;
     resize: none;
     line-height: 1.5rem;
 }
 
-.Human {
-    background-color: #00ba09;
+#flip-cards {
+    height: 0;
+    width: 0;
+    visibility: hidden;
 }
 
-.AI {
-    background-color: #ff0000;
+#flip-cards-label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 50px;
+    height: 25px;
+    background-color: grey;
+    display: inline-block;
+    border-radius: 25px;
+    position: relative;
 }
+
+#flip-cards-label::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: calc((25px - 20px) / 2) ;
+    left: 4px;
+    transition: 0.3s;
+}
+
+#flip-cards:checked+#flip-cards-label {
+    background-color: #0077e6;
+}
+
+#flip-cards:checked+#flip-cards-label::after {
+    left: 25px;
+}
+
+/* #flip-cards-label:active::after {
+    width: 50px;
+} */

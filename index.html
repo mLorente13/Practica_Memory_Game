@@ -7,12 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- <nav class="navbar">
-        <ul class="navbar-links">
-            <li><a class="navbar-link" href="index.html">Home</a></li>
-            <li><a class="navbar-link" href="scores.html">Scores</a></li>
-        </ul>
-    </nav> -->
     <main class="container">
         <h1>Memory Game</h1>
         <header class="game-header">
@@ -33,6 +27,9 @@
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
             </select>
+            
+            <input type="checkbox" id="flip-cards" />
+            <label id="flip-cards-label" for="flip-cards">Show cards at start of the game</label>
         </section>
         <div id="game-container" class="game-container"></div>
         <aside class="game-log">

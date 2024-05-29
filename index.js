@@ -28,7 +28,8 @@ function startGame() {
     AIDifficulty = document.getElementById("difficulty").value;
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
-    cards = generateCards(shuffledCards);
+    let showCards = document.getElementById("flip-cards").checked;
+    cards = generateCards(shuffledCards, showCards);
     stopTimer();
     startTimer();
     game(aiTurn);
@@ -144,12 +145,12 @@ function shuffleCards(imgPaths) {
     return shuffledCards;
 }
 
-function generateCards(shuffledCards) {
+function generateCards(shuffledCards, showCards) {
     let index = 0;
     shuffledCards.forEach((path) => {
         let cardAlt = path.split("/")[1].split("_")[0].split(".")[0];
         gameContainer.innerHTML += `
-            <div class="card flipped" data-position="${index}">
+            <div class="card${showCards ? " flipped" : ""}" data-position="${index}">
                 <div class="card-front">
                    <img src="${path}" alt="${cardAlt}" width="100" />
                 </div>
