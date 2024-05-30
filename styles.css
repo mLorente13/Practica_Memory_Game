@@ -248,11 +248,12 @@ body {
 
 @media (max-width: 768px) {
     .container {
-        width: 90%;
+        width: 95%;
     }
 
     .game-container {
         width: 100%;
+        margin: 0;
     }
 
     .card {
