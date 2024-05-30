@@ -19,8 +19,9 @@ let iaMemory = new Map();
 let aiTimeouts = [];
 let humanPairsFound = 0;
 let aiPairsFound = 0;
-let humanMatches = 0;
-let aiMatches = 0;
+let humanMatches = localStorage.getItem("humanWins") || 0;
+let aiMatches = localStorage.getItem("aiWins") || 0;
+printMatchesScore(humanMatches, aiMatches);
 
 startBtn.addEventListener("click", function () {
     startGame();
@@ -312,8 +313,10 @@ function checkGameEnd() {
     if (matchedCards.length === cards.length) {
         if (humanPairsFound > aiPairsFound) {
             humanMatches++;
+            localStorage.setItem("humanWins", humanMatches);
         } else {
             aiMatches++;
+            localStorage.setItem("aiWins", aiMatches);
         }
         humanPairsFound = 0;
         aiPairsFound = 0;
