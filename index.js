@@ -19,8 +19,8 @@ let iaMemory = new Map();
 let aiTimeouts = [];
 let humanPairsFound = 0;
 let aiPairsFound = 0;
-let humanMatches = 0;
-let aiMatches = 0;
+let humanMatches = localStorage.getItem("humanWins" || 0);
+let aiMatches = localStorage.getItem("aiWins" || 0);
 
 startBtn.addEventListener("click", function () {
     startGame();
@@ -33,7 +33,7 @@ function startGame() {
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     let showCards = document.getElementById("flip-cards").checked;
-    cards = generateCards(shuffledCards, showCards);
+    cards = generateCards(shuffledCards, showCards);    
     stopTimer();
     startTimer();
     game(aiTurn);
@@ -52,10 +52,7 @@ function game(isAiTurn) {
         let cards = document.querySelectorAll(".card");
         let pickedCards = [];
         if (isAiTurn) {
-            gameContainer.style.pointerEvents = "none";
             aiPlay(cards, pickedCards);
-        } else {
-            gameContainer.style.pointerEvents = "auto";
         }
     }, 500); 
     aiTimeouts.push(gameTimeout);
@@ -194,8 +191,9 @@ function generateCards(shuffledCards, showCards) {
         });
     }, 3000);
     cards.forEach((card) => {
-        card.addEventListener("click", function () {
-            if (!aiTurn) {
+        card.addEventListener("click", () => {
+            let flippedCards = document.querySelectorAll(".flipped");
+            if (!aiTurn && flippedCards.length < 2) {
                 flipCard(card);
             }
         });
@@ -311,9 +309,9 @@ function checkGameEnd() {
     let matchedCards = document.querySelectorAll(".matched");
     if (matchedCards.length === cards.length) {
         if (humanPairsFound > aiPairsFound) {
-            humanMatches++;
-        } else {
-            aiMatches++;
+            localStorage.setItem("humanWins", ++humanMatches);
+        } else if (aiPairsFound > humanPairsFound){
+            localStorage.setItem("aiWins", ++aiMatches);
         }
         humanPairsFound = 0;
         aiPairsFound = 0;
