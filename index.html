@@ -27,22 +27,22 @@
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
             </select>
-            
+            <p>Show cards:</p>
             <input type="checkbox" id="flip-cards" />
-            <label id="flip-cards-label" for="flip-cards">Show cards at start of the game</label>
+            <label id="flip-cards-label" for="flip-cards"></label>
         </section>
         <div id="game-container" class="game-container"></div>
         <aside class="game-log">
             <h2>Score</h2>
             <div class="scoreboard">
                 <p class="scoreboard-title matches">Matches</p>
-                <p class="scoreboard-text">Human <span id="human-matches">0</span></p>
-                <p class="scoreboard-text"> - </p>
-                <p class="scoreboard-text"><span id="ai-matches">0</span> Bot</p>
-                <p class="scoreboard-title pairs">Pairs</p>
-                <p id="scoreboard-text">Human <span id="human-score">0</span></p>
+                <p>Human <span id="human-matches">0</span></p>
                 <p> - </p>
-                <p id="scoreboard-text"><span id="ai-score">0</span> Bot</p>
+                <p><span id="ai-matches">0</span> Bot</p>
+                <p class="scoreboard-title pairs">Pairs</p>
+                <p class="scoreboard-text">Human <span id="human-score">0</span></p>
+                <p> - </p>
+                <p class="scoreboard-text"><span id="ai-score">0</span> Bot</p>
             </div>
             <h2>Game Log</h2>
             <textarea id="game-log" readonly></textarea>
