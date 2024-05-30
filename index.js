@@ -185,11 +185,9 @@ function generateCards(shuffledCards, showCards) {
         index++;
     });
     cards = document.querySelectorAll(".card");
-    setTimeout(() => {
-        cards.forEach((card) => {
-            card.classList.remove("flipped");
-        });
-    }, 3000);
+    cards.forEach((card) => {
+        card.classList.remove("flipped");
+    });
     cards.forEach((card) => {
         card.addEventListener("click", () => {
             let flippedCards = document.querySelectorAll(".flipped");
@@ -318,13 +316,11 @@ function checkGameEnd() {
         printMatchesScore(humanMatches, aiMatches);
         printPairsScore(humanPairsFound, aiPairsFound);
         stopTimer();
-        setTimeout(() => {
-            confetti({
-                particleCount: 1000,
-                spread: 150,
-                origin: { y: 0.6 },
-            });
-        }, 500);
+        confetti({
+            particleCount: 1000,
+            spread: 150,
+            origin: { y: 0.6 },
+        });
         return true;
     }
     return false;
