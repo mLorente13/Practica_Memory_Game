@@ -1,0 +1,16 @@
+{
+    "name": "Basketball Memory Game",
+    "short_name": "Basketball Memory Game",
+    "theme_color": "#2196F3",
+    "background_color": "#2196F3",
+    "display": "standalone",
+    "orientation": "portrait",
+    "Scope": "/",
+    "start_url": "/index.html",
+    "icons": [
+        {
+            "src": "images/icons/icon-72x72.png",
+            "sizes": "72x72"
+        }
+    ]
+}
