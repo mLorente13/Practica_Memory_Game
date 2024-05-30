@@ -19,6 +19,8 @@ let iaMemory = new Map();
 let aiTimeouts = [];
 let humanPairsFound = 0;
 let aiPairsFound = 0;
+let humanMatches = 0;
+let aiMatches = 0;
 
 startBtn.addEventListener("click", function () {
     startGame();
@@ -33,7 +35,6 @@ function startGame() {
     let showCards = document.getElementById("flip-cards").checked;
     cards = generateCards(shuffledCards, showCards);
     stopTimer();
-    resetScores();
     startTimer();
     game(aiTurn);
 }
@@ -65,6 +66,13 @@ function printPairsScore(humanPairsFound, aiPairsFound) {
     let aiScore = document.getElementById("ai-score");
     humanScore.textContent = humanPairsFound;
     aiScore.textContent = aiPairsFound;
+}
+
+function printMatchesScore(humanMatches, aiMatches) {
+    let humanMatchesScore = document.getElementById("human-matches");
+    let aiMatchesScore = document.getElementById("ai-matches");
+    humanMatchesScore.textContent = humanMatches;
+    aiMatchesScore.textContent = aiMatches;
 }
 
 function aiPlay(cards, pickedCards) {
@@ -200,9 +208,9 @@ resetBtn.addEventListener("click", function () {
     gameContainer.innerHTML = "";
     aiTimeouts.forEach(timeout => clearTimeout(timeout));
     stopTimer();
-    aiTimeouts = []; // Reset the timeouts array
-    iaMemory.clear(); // Clear AI memory
-    aiTurn = false; // Reset AI turn
+    aiTimeouts = [];
+    iaMemory.clear();
+    aiTurn = false;
     startBtn.disabled = false;
 });
 
@@ -302,6 +310,15 @@ function addPlayToGameLog(card, play, player) {
 function checkGameEnd() {
     let matchedCards = document.querySelectorAll(".matched");
     if (matchedCards.length === cards.length) {
+        if (humanPairsFound > aiPairsFound) {
+            humanMatches++;
+        } else {
+            aiMatches++;
+        }
+        humanPairsFound = 0;
+        aiPairsFound = 0;
+        printMatchesScore(humanMatches, aiMatches);
+        printPairsScore(humanPairsFound, aiPairsFound);
         stopTimer();
         setTimeout(() => {
             confetti({
