@@ -183,9 +183,6 @@ body {
 }
 
 .game-log {
-    position: absolute;
-    top: 50px;
-    right: 50px;
     height: 100%;
     display: inline;
     resize: none;
