@@ -223,8 +223,11 @@ function stopTimer() {
 }
 
 function flipCard(card) {
-    card.classList.add("flipped");
     let flippedCards = document.querySelectorAll(".flipped");
+    if (flippedCards.length === 2) {
+        return;
+    }
+    card.classList.add("flipped");
     if (flippedCards.length === 2) {
         checkMatch(flippedCards);
     }
