@@ -162,8 +162,9 @@ body {
 .scores {
     position: absolute;
     top: 50px;
-    right: 57px;
-    width: 35%;
+    right: 0;
+    margin-right: 15%;
+    width: 24%;
 }
 
 .scoreboard {
@@ -246,7 +247,7 @@ body {
     left: 25px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
     .container {
         width: 95%;
     }
