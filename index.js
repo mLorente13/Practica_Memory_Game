@@ -19,8 +19,8 @@ let iaMemory = new Map();
 let aiTimeouts = [];
 let humanPairsFound = 0;
 let aiPairsFound = 0;
-let humanMatches = localStorage.getItem("humanWins" || 0);
-let aiMatches = localStorage.getItem("aiWins" || 0);
+let humanMatches = localStorage.getItem("humanWins") || 0;
+let aiMatches = localStorage.getItem("aiWins") || 0;
 
 startBtn.addEventListener("click", function () {
     startGame();
