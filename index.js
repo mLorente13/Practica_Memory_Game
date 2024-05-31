@@ -21,6 +21,7 @@ let humanPairsFound = 0;
 let aiPairsFound = 0;
 let humanMatches = localStorage.getItem("humanWins") || 0;
 let aiMatches = localStorage.getItem("aiWins") || 0;
+printMatchesScore(humanMatches, aiMatches);
 
 startBtn.addEventListener("click", function () {
     startGame();

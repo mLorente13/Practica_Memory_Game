@@ -13,6 +13,8 @@ body {
     width: 100%;
 }
 
+/* Navbar styles */
+
 .navbar {
     width: 100%;
     display: flex;
@@ -96,6 +98,98 @@ body {
     margin-right: .5rem;
 }
 
+/* Game options styles */
+
+.game-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+}
+
+#flip-cards {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+#flip-cards-label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 50px;
+    height: 25px;
+    background-color: grey;
+    display: inline-block;
+    border-radius: 25px;
+    position: relative;
+}
+
+#flip-cards-label::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: calc((25px - 20px) / 2) ;
+    left: 4px;
+    transition: 0.3s;
+}
+
+#flip-cards:checked+#flip-cards-label {
+    background-color: #0077e6;
+}
+
+#flip-cards:checked+#flip-cards-label::after {
+    left: 25px;
+}
+
+#start-turn {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+#start-turn-label {
+    text-indent: -9999px;
+    cursor: pointer;
+    height: 10px;
+    width: 35px;
+    box-sizing: border-box;
+    padding: 2px 0px;
+    margin: .5rem 0;
+}
+
+#start-turn-label::before {
+    content: "";
+    display: block;
+    height: 3px;
+    width: 100%;
+    position: relative;
+    top: calc((2px - 3px) / 2);
+    background-color: #333;
+}
+
+#start-turn-label::after {
+    content: "";
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: red;
+    position: relative;
+    top: -10px;
+    left: 0;
+    transition: 0.3s;
+}
+
+#start-turn:checked+#start-turn-label::after {
+    left: 25px;
+}
+
+/* Card styles */
+
 .card {
     width: 23%;
     height: 150px;
@@ -143,57 +237,6 @@ body {
 
 .matched {
     pointer-events: none;
-}
-
-.game-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
-}
-
-#start-turn {
-    height: 0;
-    width: 0;
-    visibility: hidden;
-}
-
-#start-turn-label {
-    text-indent: -9999px;
-    cursor: pointer;
-    height: 10px;
-    width: 35px;
-    box-sizing: border-box;
-    padding: 2px 0px;
-    margin: .5rem 0;
-}
-
-#start-turn-label::before {
-    content: "";
-    display: block;
-    height: 3px;
-    width: 100%;
-    position: relative;
-    top: calc((2px - 3px) / 2);
-    background-color: #333;
-}
-
-#start-turn-label::after {
-    content: "";
-    display: block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: red;
-    position: relative;
-    top: -10px;
-    left: 0;
-    transition: 0.3s;
-}
-
-#start-turn:checked+#start-turn-label::after {
-    left: 25px;
 }
 
 .matches {
@@ -253,43 +296,6 @@ body {
     width: 100%;
     resize: none;
     line-height: 1.5rem;
-}
-
-#flip-cards {
-    height: 0;
-    width: 0;
-    visibility: hidden;
-}
-
-#flip-cards-label {
-    cursor: pointer;
-    text-indent: -9999px;
-    width: 50px;
-    height: 25px;
-    background-color: grey;
-    display: inline-block;
-    border-radius: 25px;
-    position: relative;
-}
-
-#flip-cards-label::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    top: calc((25px - 20px) / 2) ;
-    left: 4px;
-    transition: 0.3s;
-}
-
-#flip-cards:checked+#flip-cards-label {
-    background-color: #0077e6;
-}
-
-#flip-cards:checked+#flip-cards-label::after {
-    left: 25px;
 }
 
 @media (max-width: 1023px) {
