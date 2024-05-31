@@ -259,6 +259,7 @@ body {
 
     .card {
         width: 23%;
+        height: 100px;
     }
 
     .card-img {
