@@ -33,9 +33,12 @@ function startGame() {
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     let showCards = document.getElementById("flip-cards").checked;
+    let startTurn = document.getElementById("start-turn");
     cards = generateCards(shuffledCards, showCards);    
     stopTimer();
     startTimer();
+    console.log(startTurn.checked);
+    aiTurn = startTurn.checked ? true : false;
     game(aiTurn);
 }
 
