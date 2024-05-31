@@ -185,10 +185,9 @@ function generateCards(shuffledCards, showCards) {
         index++;
     });
     cards = document.querySelectorAll(".card");
+    setTimeout(() => {
     cards.forEach((card) => {
         card.classList.remove("flipped");
-    });
-    cards.forEach((card) => {
         card.addEventListener("click", () => {
             let flippedCards = document.querySelectorAll(".flipped");
             if (!aiTurn && flippedCards.length < 2) {
@@ -196,6 +195,7 @@ function generateCards(shuffledCards, showCards) {
             }
         });
     });
+    }, 2000);
     return cards;
 }
 
