@@ -251,8 +251,8 @@ body {
     position: absolute;
     top: 50px;
     right: 0;
-    margin-right: 15%;
-    width: 24%;
+    margin-right: 10%;
+    width: 29%;
 }
 
 .scoreboard {
@@ -334,5 +334,12 @@ body {
 
     .scoreboard {
         width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .game-options {
+        width: 50%;
+        gap: .5rem;
     }
 }
