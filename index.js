@@ -35,6 +35,8 @@ function startGame() {
     let shuffledCards = shuffleCards(pickedImages);
     let showCards = document.getElementById("flip-cards").checked;
     let startTurn = document.getElementById("start-turn");
+    iaMemory.clear();
+    console.log(iaMemory);
     cards = generateCards(shuffledCards, showCards);    
     stopTimer();
     startTimer();
@@ -153,10 +155,17 @@ function pickRandomImages(boardSize) {
 }
 
 function startTimer() {
-    let time = 0;
+    let time = "0:00";
     let timer = document.getElementById("timer");
     interval = setInterval(() => {
-        time++;
+        let minutes = parseInt(time.split(":")[0]);
+        let seconds = parseInt(time.split(":")[1]);
+        seconds++;
+        if (seconds === 60) {
+            minutes++;
+            seconds = 0;
+        }
+        time = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
         timer.textContent = time;
     }, 1000);
 }
@@ -189,17 +198,18 @@ function generateCards(shuffledCards, showCards) {
         index++;
     });
     cards = document.querySelectorAll(".card");
-    setTimeout(() => {
+    if (showCards) {
+        setTimeout(() => {
+        cards.forEach((card) => {
+            card.classList.remove("flipped");
+        });
+        }, 3000);
+    }
     cards.forEach((card) => {
-        card.classList.remove("flipped");
-        card.addEventListener("click", () => {
-            let flippedCards = document.querySelectorAll(".flipped");
-            if (!aiTurn && flippedCards.length < 2) {
-                flipCard(card);
-            }
+        card.addEventListener("click", function () {
+            flipCard(card);
         });
     });
-    }, 2000);
     return cards;
 }
 
@@ -218,7 +228,7 @@ function stopTimer() {
     let timer = document.getElementById("timer");
     clearInterval(interval);
     startBtn.disabled = false;
-    timer.textContent = 0;
+    timer.textContent = "0:00";
 }
 
 function flipCard(card) {
@@ -251,7 +261,7 @@ function checkMemoryFailure(difficulty) {
     } else if (difficulty === "medium") {
         return Math.random() < 0.3;
     } else if (difficulty === "hard") {
-        return Math.random() < 0.1;
+        return false;
     }
 }
 
