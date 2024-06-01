@@ -45,12 +45,59 @@ function startGame() {
     game(aiTurn);
 }
 
-function resetScores() {
-    humanPairsFound = 0;
-    aiPairsFound = 0;
-    printPairsScore(humanPairsFound, aiPairsFound);
-    let gameLog = document.getElementById("game-log");
-    gameLog.textContent = "";
+function pickRandomImages(boardSize) {
+    let randomImages = [];
+    let randomIndex;
+    while (randomImages.length < boardSize / 2) {
+        randomIndex = Math.floor(Math.random() * images.length);
+        if (!randomImages.includes(images[randomIndex])) {
+            randomImages.push(images[randomIndex]);
+        }
+    }
+    return randomImages;
+}
+
+function shuffleCards(imgPaths) {
+    let shuffledCards = [];
+    let cardsCopy = [...imgPaths, ...imgPaths];
+    while (cardsCopy.length > 0) {
+        let randomIndex = Math.floor(Math.random() * cardsCopy.length);
+        shuffledCards.push(cardsCopy[randomIndex]);
+        cardsCopy.splice(randomIndex, 1);
+    }
+    return shuffledCards;
+}
+
+function generateCards(shuffledCards, showCards) {
+    let index = 0;
+    shuffledCards.forEach((path) => {
+        let cardAlt = path.split("/")[1].split("_")[0].split(".")[0];
+        gameContainer.innerHTML += `
+            <div class="card${showCards ? " flipped" : ""}" data-position="${index}">
+                <div class="card-front">
+                   <img class="card-img" src="${path}" alt="${cardAlt}" />
+                </div>
+                <div class="card-back">
+                    <img src="img/nba-logo.png" alt="Card Back" height="125" />
+                </div>
+            </div>
+        `;
+        index++;
+    });
+    cards = document.querySelectorAll(".card");
+    if (showCards) {
+        setTimeout(() => {
+        cards.forEach((card) => {
+            card.classList.remove("flipped");
+        });
+        }, 3000);
+    }
+    cards.forEach((card) => {
+        card.addEventListener("click", function () {
+            flipCard(card);
+        });
+    });
+    return cards;
 }
 
 function game(isAiTurn) {
@@ -62,20 +109,6 @@ function game(isAiTurn) {
         }
     }, 500); 
     aiTimeouts.push(gameTimeout);
-}
-
-function printPairsScore(humanPairsFound, aiPairsFound) {
-    let humanScore = document.getElementById("human-score");
-    let aiScore = document.getElementById("ai-score");
-    humanScore.textContent = humanPairsFound;
-    aiScore.textContent = aiPairsFound;
-}
-
-function printMatchesScore(humanMatches, aiMatches) {
-    let humanMatchesScore = document.getElementById("human-matches");
-    let aiMatchesScore = document.getElementById("ai-matches");
-    humanMatchesScore.textContent = humanMatches;
-    aiMatchesScore.textContent = aiMatches;
 }
 
 function aiPlay(cards, pickedCards) {
@@ -141,19 +174,7 @@ function pickRandomCard(cards, pickedCards) {
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
-
-function pickRandomImages(boardSize) {
-    let randomImages = [];
-    let randomIndex;
-    while (randomImages.length < boardSize / 2) {
-        randomIndex = Math.floor(Math.random() * images.length);
-        if (!randomImages.includes(images[randomIndex])) {
-            randomImages.push(images[randomIndex]);
-        }
-    }
-    return randomImages;
-}
-
+// Scoreboard
 function startTimer() {
     let time = "0:00";
     let timer = document.getElementById("timer");
@@ -170,47 +191,33 @@ function startTimer() {
     }, 1000);
 }
 
-function shuffleCards(imgPaths) {
-    let shuffledCards = [];
-    let cardsCopy = [...imgPaths, ...imgPaths];
-    while (cardsCopy.length > 0) {
-        let randomIndex = Math.floor(Math.random() * cardsCopy.length);
-        shuffledCards.push(cardsCopy[randomIndex]);
-        cardsCopy.splice(randomIndex, 1);
-    }
-    return shuffledCards;
+function stopTimer() {
+    let timer = document.getElementById("timer");
+    clearInterval(interval);
+    startBtn.disabled = false;
+    timer.textContent = "0:00";
 }
 
-function generateCards(shuffledCards, showCards) {
-    let index = 0;
-    shuffledCards.forEach((path) => {
-        let cardAlt = path.split("/")[1].split("_")[0].split(".")[0];
-        gameContainer.innerHTML += `
-            <div class="card${showCards ? " flipped" : ""}" data-position="${index}">
-                <div class="card-front">
-                   <img class="card-img" src="${path}" alt="${cardAlt}" />
-                </div>
-                <div class="card-back">
-                    <img src="img/nba-logo.png" alt="Card Back" height="125" />
-                </div>
-            </div>
-        `;
-        index++;
-    });
-    cards = document.querySelectorAll(".card");
-    if (showCards) {
-        setTimeout(() => {
-        cards.forEach((card) => {
-            card.classList.remove("flipped");
-        });
-        }, 3000);
-    }
-    cards.forEach((card) => {
-        card.addEventListener("click", function () {
-            flipCard(card);
-        });
-    });
-    return cards;
+function resetScores() {
+    humanPairsFound = 0;
+    aiPairsFound = 0;
+    printPairsScore(humanPairsFound, aiPairsFound);
+    let gameLog = document.getElementById("game-log");
+    gameLog.textContent = "";
+}
+
+function printPairsScore(humanPairsFound, aiPairsFound) {
+    let humanScore = document.getElementById("human-score");
+    let aiScore = document.getElementById("ai-score");
+    humanScore.textContent = humanPairsFound;
+    aiScore.textContent = aiPairsFound;
+}
+
+function printMatchesScore(humanMatches, aiMatches) {
+    let humanMatchesScore = document.getElementById("human-matches");
+    let aiMatchesScore = document.getElementById("ai-matches");
+    humanMatchesScore.textContent = humanMatches;
+    aiMatchesScore.textContent = aiMatches;
 }
 
 resetBtn.addEventListener("click", function () {
@@ -223,13 +230,6 @@ resetBtn.addEventListener("click", function () {
     aiTurn = false;
     startBtn.disabled = false;
 });
-
-function stopTimer() {
-    let timer = document.getElementById("timer");
-    clearInterval(interval);
-    startBtn.disabled = false;
-    timer.textContent = "0:00";
-}
 
 function flipCard(card) {
     card.classList.add("flipped");
