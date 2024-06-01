@@ -21,6 +21,7 @@ let humanPairsFound = 0;
 let aiPairsFound = 0;
 let humanMatches = localStorage.getItem("humanWins") || 0;
 let aiMatches = localStorage.getItem("aiWins") || 0;
+let gameEnd = false;
 printMatchesScore(humanMatches, aiMatches);
 
 startBtn.addEventListener("click", function () {
@@ -42,7 +43,8 @@ function startGame() {
     startTimer();
     console.log(startTurn.checked);
     aiTurn = startTurn.checked ? true : false;
-    game(aiTurn);
+    gameEnd = false;
+    game(aiTurn, gameEnd);
 }
 
 function pickRandomImages(boardSize) {
@@ -100,7 +102,10 @@ function generateCards(shuffledCards, showCards) {
     return cards;
 }
 
-function game(isAiTurn) {
+function game(isAiTurn, gameEnd) {
+    if (gameEnd) {
+        return;
+    }
     let gameTimeout = setTimeout(() => {
         let cards = document.querySelectorAll(".card");
         let pickedCards = [];
@@ -108,6 +113,9 @@ function game(isAiTurn) {
             aiPlay(cards, pickedCards);
         }
     }, 500); 
+    cards.forEach((card) => {
+        card.style.pointerEvents = isAiTurn ? "none" : "auto";
+    });
     aiTimeouts.push(gameTimeout);
 }
 
@@ -235,9 +243,16 @@ function flipCard(card) {
     card.classList.add("flipped");
     let flippedCards = document.querySelectorAll(".flipped");
     if (flippedCards.length === 2) {
+        removeEventListeners();
         checkMatch(flippedCards);
     }
     saveCardOnMemory(card);
+}
+
+function removeEventListeners() {
+    cards.forEach((card) => {
+        card.style.pointerEvents = "none";
+    });
 }
 
 function saveCardOnMemory(card) {
@@ -275,7 +290,6 @@ function removeCardsFromMemory(card) {
 function checkMatch(flippedCards) {
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
-    let gameEnd = false;
     let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
             flippedCards.forEach((card) => {
@@ -306,7 +320,7 @@ function checkMatch(flippedCards) {
         }
         flippedCards = [];
         aiTurn = !aiTurn;
-        game(aiTurn);
+        game(aiTurn, gameEnd);
     }, 1000);
     aiTimeouts.push(matchTimeout);
 }
