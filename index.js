@@ -106,16 +106,16 @@ function game(isAiTurn, gameEnd) {
     if (gameEnd) {
         return;
     }
-    let gameTimeout = setTimeout(() => {
-        let cards = document.querySelectorAll(".card");
-        let pickedCards = [];
-        if (isAiTurn) {
-            aiPlay(cards, pickedCards);
-        }
-    }, 500); 
     cards.forEach((card) => {
         card.style.pointerEvents = isAiTurn ? "none" : "auto";
     });
+    let gameTimeout = setTimeout(() => {
+    if (isAiTurn) {
+        let cards = document.querySelectorAll(".card");
+        let pickedCards = [];
+            aiPlay(cards, pickedCards);
+        }
+    }, 500); 
     aiTimeouts.push(gameTimeout);
 }
 
