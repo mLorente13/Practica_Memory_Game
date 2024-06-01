@@ -16,25 +16,33 @@
             <button id="reset"><i class="fa-solid fa-arrow-rotate-right"></i> Reset</button>
         </header>
         <section class="game-options">
-            <label for="board-size">Board Size:</label>
-            <select id="board-size">
-                <option value="12">4x3</option>
-                <option value="16">4x4</option>
-                <option value="20">4x5</option>
-            </select>
-            <label for="difficulty">Difficulty:</label>
-            <select id="difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-            <p>Show cards:</p>
-            <input type="checkbox" id="flip-cards" />
-            <label id="flip-cards-label" for="flip-cards"></label>
-            <p>Human</p>
-            <input type="checkbox" id="start-turn" />
-            <label id="start-turn-label" for="start-turn"></label>
-            <p>Bot</p>
+            <div class="game-option">
+                <label for="board-size">Board Size:</label>
+                <select id="board-size">
+                    <option value="12">4x3</option>
+                    <option value="16">4x4</option>
+                    <option value="20">4x5</option>
+                </select>
+            </div>
+            <div class="game-option">
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="game-option">
+                <p>Show cards:</p>
+                <input type="checkbox" id="flip-cards" />
+                <label id="flip-cards-label" for="flip-cards"></label>
+            </div>
+            <div class="game-option">
+                <p>Human</p>
+                <input type="checkbox" id="start-turn" />
+                <label id="start-turn-label" for="start-turn"></label>
+                <p>Bot</p>
+            </div>     
         </section>
         <section class="scores">
             <div class="scoreboard">

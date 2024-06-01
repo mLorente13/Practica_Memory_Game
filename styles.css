@@ -103,9 +103,15 @@ body {
 .game-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: .5rem;
     align-items: center;
-    width: 100%;
+    width: 60%;
+}
+
+.game-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 #flip-cards {
@@ -158,7 +164,7 @@ body {
     width: 35px;
     box-sizing: border-box;
     padding: 2px 0px;
-    margin: .5rem 0;
+    margin: .5rem;
 }
 
 #start-turn-label::before {
@@ -310,6 +316,10 @@ body {
         width: 95%;
     }
 
+    .game-options {
+        width: 100%;
+    }
+
     .game-container {
         width: 100%;
         margin: 0;
@@ -337,12 +347,5 @@ body {
 
     .scoreboard {
         width: 100%;
-    }
-}
-
-@media (min-width: 1200px) {
-    .game-options {
-        width: 50%;
-        gap: .5rem;
     }
 }
