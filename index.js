@@ -122,14 +122,13 @@ function game(isAiTurn, gameEnd) {
 }
 
 function aiPlay(cards, pickedCards) {
-    console.log(iaMemory);
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
     let memoryContainsCard = checkMemoryForCard(cards, pickedCards, memoryContainsPair);
-    if (!memoryContainsPair) {
-        pickedCards.push(pickRandomCard(cards, pickedCards));
-        pickedCards.push(pickRandomCard(cards, pickedCards));
-    } else if (memoryContainsCard) {
-        pickedCards.push(pickRandomCard(cards, pickedCards));
+    if (memoryContainsCard) {
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
+    } else if (!memoryContainsCard && !memoryContainsPair) {
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
     }
     
     flipCard(pickedCards[0]);
@@ -175,10 +174,14 @@ function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
     return memoryContainsCard;
 }
 
-function pickRandomCard(cards, pickedCards) {
-    cards = [...cards].filter((card) => !card.classList.contains("flipped"));
-    cards = [...cards].filter((card) => !card.classList.contains("matched"));
-    cards = [...cards].filter((card) => pickedCards.indexOf(card) === -1);
+function pickRandomCard(cards, pickedCards, memoryContainsCard) {
+    cards = [...cards].filter((card) => !card.classList.contains("flipped"))
+        .filter((card) => !card.classList.contains("matched"))
+        .filter((card) => pickedCards.indexOf(card) === -1);
+    
+    cards.forEach((card) => {
+        console.log(card.querySelector(".card-front").querySelector("img").alt);
+    });
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
