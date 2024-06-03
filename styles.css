@@ -368,5 +368,6 @@ body {
 @media (max-width: 768px) {
     .card-img {
         width: 90%;
+        height: auto;
     }
 }
