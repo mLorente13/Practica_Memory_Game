@@ -14,7 +14,7 @@ let images = [
     "img/thunder_logo.png",
 ];
 let gameContainer = document.getElementById("game-container");
-let aiTurn = false;
+let aiTurn;
 let iaMemory = new Map();
 let aiTimeouts = [];
 let humanPairsFound = 0;
@@ -31,19 +31,28 @@ startBtn.addEventListener("click", function () {
 function startGame() {
     gameContainer.innerHTML = "";
     let boardSize = document.getElementById("board-size").value;
-    AIDifficulty = document.getElementById("difficulty").value;
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     let showCards = document.getElementById("flip-cards").checked;
-    let startTurn = document.getElementById("start-turn");
     iaMemory.clear();
-    console.log(iaMemory);
-    cards = generateCards(shuffledCards, showCards);    
+    cards = generateCards(shuffledCards, showCards);
     stopTimer();
     startTimer();
-    console.log(startTurn.checked);
-    aiTurn = startTurn.checked ? true : false;
+    aiTurn = document.getElementById("start-turn").checked;
     gameEnd = false;
+    if (showCards) {
+        setTimeout(() => {
+            cards.forEach((card) => {
+                card.classList.remove("flipped");
+            });
+            startGameHelper(aiTurn, gameEnd);
+        }, 3000);
+    } else {
+        startGameHelper(aiTurn, gameEnd);
+    }
+}
+
+function startGameHelper(aiTurn, gameEnd) {
     game(aiTurn, gameEnd);
 }
 
@@ -87,13 +96,6 @@ function generateCards(shuffledCards, showCards) {
         index++;
     });
     cards = document.querySelectorAll(".card");
-    if (showCards) {
-        setTimeout(() => {
-        cards.forEach((card) => {
-            card.classList.remove("flipped");
-        });
-        }, 3000);
-    }
     cards.forEach((card) => {
         card.addEventListener("click", function () {
             flipCard(card);
@@ -258,6 +260,7 @@ function removeEventListeners() {
 function saveCardOnMemory(card) {
     let key = card.querySelector("img").alt;
     let value = card.dataset.position;
+    let AIDifficulty = document.getElementById("difficulty").value;
     let memoryHasFailed = checkMemoryFailure(AIDifficulty)
     if (!memoryHasFailed) {
         if (iaMemory.has(key) && iaMemory.get(key).length < 2 && iaMemory.get(key)[0] !== value) {
