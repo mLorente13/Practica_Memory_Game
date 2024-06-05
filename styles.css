@@ -110,8 +110,7 @@ body {
 
 /* Game options styles */
 
-#game-settings,
-#game-end {
+#game-settings {
     border-radius: 10px;
     width: 400px;
     height: 500px;
@@ -410,6 +409,39 @@ body {
     box-sizing: border-box;
 }
 
+#game-end {
+    width: 400px;
+    height: 250px;
+    margin: auto;
+    border-radius: 15px;
+}
+
+#game-end[open] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-end-icon {
+    font-size: 4rem;
+    width: 100%;
+    text-align: center;
+}
+
+#game-end-title {
+    text-align: center;
+    margin: 1rem auto;
+    width: 90%;
+    font-size: 2.5rem;
+}
+
+#game-time {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 1rem auto;
+}
+
 @media (max-width: 1023px) {
     .container {
         width: 95%;
@@ -430,7 +462,8 @@ body {
     }
 
     .card-img {
-        height: 70%;
+        height: 80%;
+        width: auto;
     }
 
     .scores {
@@ -458,7 +491,7 @@ body {
 
 @media (max-width: 768px) {
     .card-img {
-        width: 90%;
-        height: auto;
+        height: 60%;
+        width: auto;
     }
 }

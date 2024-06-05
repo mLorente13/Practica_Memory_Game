@@ -393,6 +393,7 @@ function checkGameEnd() {
             humanWin = true;
         } else if (aiPairsFound > humanPairsFound){
             localStorage.setItem("aiWins", ++aiMatches);
+            humanWin = false;
         }
         humanPairsFound = 0;
         aiPairsFound = 0;
@@ -406,14 +407,17 @@ function checkGameEnd() {
 
 function printGameEndWindow(humanWin) {
     let gameEndWindow = document.getElementById("game-end");
+    let gameEndIcon = document.getElementById("game-end-icon");
     let gameEndMessage = document.getElementById("game-end-title");
     let gameTime = document.getElementById("game-time");
     gameTime.textContent = `Time: ${timer.textContent}`;
     let gameEndBtn = document.getElementById("game-end-btn");
     if (humanWin == undefined) {
-        gameEndMessage.textContent = "It's a Draw! 🧍‍♂️ 🤝 🤖";
+        gameEndIcon.textContent = "🧍‍♂️ 🤝 🤖";
+        gameEndMessage.textContent = "It's a Draw!";
     } else {
-        gameEndMessage.textContent = humanWin ? "You Win! 🏆" : "You Lose!";
+        gameEndIcon.textContent = humanWin ? "🎉" : "😢";
+        gameEndMessage.textContent = humanWin ? "You Win!" : "You Lose!";
     }
     gameEndWindow.showModal();
     gameEndBtn.addEventListener("click", function () {
