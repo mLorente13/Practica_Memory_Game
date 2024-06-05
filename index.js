@@ -57,6 +57,7 @@ function applyGameSettings() {
     AIDifficulty = document.getElementById("difficulty").value;
     flipCards = document.getElementById("flip-cards").checked;
     startTurn = document.getElementById("start-turn").checked;
+    console.log(boardSize, AIDifficulty, flipCards, startTurn);
 }
 
 printMatchesScore(humanMatches, aiMatches);
@@ -68,9 +69,11 @@ startBtn.addEventListener("click", function () {
 function startGame() {
     applyGameSettings(boardSize, AIDifficulty, flipCards, startTurn);
     gameContainer.innerHTML = "";
+    console.log(boardSize);
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     iaMemory.clear();
+    console.log(iaMemory);
     cards = generateCards(shuffledCards, flipCards);    
     stopTimer();
     startTimer();
