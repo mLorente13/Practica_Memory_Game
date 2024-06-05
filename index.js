@@ -73,12 +73,24 @@ function startGame() {
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     iaMemory.clear();
-    console.log(iaMemory);
-    cards = generateCards(shuffledCards, flipCards);    
+    cards = generateCards(shuffledCards, flipCards);
     stopTimer();
     startTimer();
-    aiTurn = startTurn;
+    aiTurn = document.getElementById("start-turn").checked;
     gameEnd = false;
+    if (flipCards) {
+        setTimeout(() => {
+            cards.forEach((card) => {
+                card.classList.remove("flipped");
+            });
+            startGameHelper(aiTurn, gameEnd);
+        }, 3000);
+    } else {
+        startGameHelper(aiTurn, gameEnd);
+    }
+}
+
+function startGameHelper(aiTurn, gameEnd) {
     game(aiTurn, gameEnd);
 }
 
