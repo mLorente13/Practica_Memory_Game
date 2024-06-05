@@ -29,6 +29,7 @@ let AIDifficulty;
 let boardSize;
 let flipCards;
 let startTurn;
+let keepPlaying;
 
 gameSettings.addEventListener("click", function () {
     if (gameSettingsContainer.open) {
@@ -57,7 +58,7 @@ function applyGameSettings() {
     AIDifficulty = document.getElementById("difficulty").value;
     flipCards = document.getElementById("flip-cards").checked;
     startTurn = document.getElementById("start-turn").checked;
-    console.log(boardSize, AIDifficulty, flipCards, startTurn);
+    keepPlaying = document.getElementById("keep-playing").checked;
 }
 
 printMatchesScore(humanMatches, aiMatches);
@@ -69,7 +70,6 @@ startBtn.addEventListener("click", function () {
 function startGame() {
     applyGameSettings(boardSize, AIDifficulty, flipCards, startTurn);
     gameContainer.innerHTML = "";
-    console.log(boardSize);
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
     iaMemory.clear();
@@ -336,6 +336,9 @@ function checkMatch(flippedCards) {
     let secondCard = flippedCards[1];
     let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
+            if (!keepPlaying) {
+                aiTurn = !aiTurn;
+            }
             flippedCards.forEach((card) => {
                 removeCardsFromMemory(card);
                 card.classList.add("matched");
@@ -362,6 +365,7 @@ function checkMatch(flippedCards) {
                 card.classList.remove("flipped");
             });
             aiTurn = !aiTurn;
+            (aiTurn);
         }
         flippedCards = [];
         game(aiTurn, gameEnd);
