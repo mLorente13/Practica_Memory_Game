@@ -229,8 +229,9 @@ function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
     }
     return memoryContainsCard;
 }
-
+// TODO: Fix filter cards remove cards that are not in memory
 function pickRandomCard(cards, pickedCards) {
+    console.log(iaMemory)
     cards = [...cards].filter((card) => !card.classList.contains("flipped"))
         .filter((card) => !card.classList.contains("matched"))
         .filter((card) => pickedCards.indexOf(card) === -1)
@@ -239,7 +240,6 @@ function pickRandomCard(cards, pickedCards) {
         console.log(card);
     });
 
-    console.log(iaMemory)
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
