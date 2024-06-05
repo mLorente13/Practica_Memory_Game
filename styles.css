@@ -65,6 +65,7 @@ body {
 }
 
 .game-header {
+    position: relative;
     width: 100%;
 }
 
@@ -88,6 +89,19 @@ body {
     border-radius: 10px;
 }
 
+#game-settings-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.25rem;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 10px;
+    margin: 1rem;
+}
+
 .game-container {
     display: flex;
     flex-wrap: wrap;
@@ -100,18 +114,40 @@ body {
 
 /* Game options styles */
 
-.game-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    align-items: center;
-    width: 60%;
+#game-settings {
+    border-radius: 10px;
+    width: 400px;
+    height: 500px;
+    margin: auto
 }
 
-.game-option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+#game-settings h2 {
+    text-align: center;
+    margin: 1.5rem;
+}
+
+#close-settings {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.25rem;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 10px;
+    margin: 1rem;
+}
+
+#save-settings {
+    padding: .75rem;
+    background-color: #333;
+    color: white;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    outline: none;
 }
 
 #flip-cards {
@@ -253,14 +289,6 @@ body {
     font-size: 1.5rem;
 }
 
-.scores {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    margin-right: 10%;
-    width: 29%;
-}
-
 .scoreboard {
     display: flex;
     align-items: center;
@@ -268,7 +296,6 @@ body {
     flex-wrap: wrap;
     width: 100%;
     height: 225px;
-    margin: 1rem 0;
     padding: 1rem;
     box-sizing: border-box;
     background-color: #000;
@@ -301,7 +328,7 @@ body {
     display: inline;
     resize: none;
     width: 35%;
-    margin: 9rem 0 0 2rem;
+    margin-left: 2rem;
 }
 
 .game-log textarea {

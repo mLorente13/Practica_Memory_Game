@@ -1,81 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Game</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/x-icon" href="img/icons/favicon.ico" />
-</head>
-<body>
-    <main class="container">
-        <h1>Memory Game</h1>
-        <header class="game-header">
-            <button id="start"><i class="fa-solid fa-play"></i> Start</button>
-            <button id="reset"><i class="fa-solid fa-arrow-rotate-right"></i> Reset</button>
-        </header>
-        <section class="game-options">
-            <div class="game-option">
-                <label for="board-size">Board Size:</label>
-                <select id="board-size">
-                    <option value="12">4x3</option>
-                    <option value="16">4x4</option>
-                    <option value="20">4x5</option>
-                </select>
-            </div>
-            <div class="game-option">
-                <label for="difficulty">Difficulty:</label>
-                <select id="difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-            <div class="game-option">
-                <p>Show cards:</p>
-                <input type="checkbox" id="flip-cards" />
-                <label id="flip-cards-label" for="flip-cards"></label>
-            </div>
-            <div class="game-option">
-                <p>Human</p>
-                <input type="checkbox" id="start-turn" />
-                <label id="start-turn-label" for="start-turn"></label>
-                <p>Bot</p>
-            </div>     
-        </section>
-        <section class="scores">
-            <div class="scoreboard">
-                <p id="timer" class="scoreboard-time">0:00</p>
-                <p class="scoreboard-title matches">Matches</p>
-                <p>Human <span id="human-matches">0</span></p>
-                <p> - </p>
-                <p><span id="ai-matches">0</span> Bot</p>
-                <p class="scoreboard-title pairs">Pairs</p>
-                <p class="scoreboard-text pair">Human <span id="human-score">0</span></p>
-                <p class="scoreboar-text pair"> - </p>
-                <p class="scoreboard-text pair"><span id="ai-score">0</span> Bot</p>
-            </div>
-        </section>
-        <div id="game-container" class="game-container"></div>
-        <aside class="game-log">
-            <h2>Game Log</h2>
-            <textarea id="game-log" readonly></textarea>
-        </aside>
-    </main>
-</body>
-<script src="index.js"></script>
-<script src="https://kit.fontawesome.com/8b0d39291b.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script>
-    if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js').then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Memory Game</title>
+        <link rel="stylesheet" href="styles.css" />
+        <link rel="manifest" href="manifest.json" />
+        <link rel="icon" type="image/x-icon" href="img/icons/favicon.ico" />
+    </head>
+    <body>
+        <main class="container">
+            <h1>Memory Game</h1>
+            <header class="game-header">
+                <button id="start">
+                    <i class="fa-solid fa-play"></i> Start
+                </button>
+                <button id="reset">
+                    <i class="fa-solid fa-arrow-rotate-right"></i> Reset
+                </button>
+                <button id="game-settings-btn">
+                    <i class="fa-solid fa-cog"></i> Settings
+                </button>
+            </header>
+            <dialog id="game-settings">
+                <h2>Game Settings</h2>
+                <button id="close-settings">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+                <fieldset>
+                    <label for="board-size">Board Size:</label>
+                    <select id="board-size">
+                        <option value="12">4x3</option>
+                        <option value="16">4x4</option>
+                        <option value="20">4x5</option>
+                    </select>
+                </fieldset>
+                <fieldset class="game-option">
+                    <label for="difficulty">Difficulty:</label>
+                    <select id="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </fieldset>
+                <fieldset class="game-option">
+                    <p>Show cards:</p>
+                    <input type="checkbox" id="flip-cards" />
+                    <label id="flip-cards-label" for="flip-cards"></label>
+                </fieldset>
+                <fieldset class="game-option">
+                    <p>Human</p>
+                    <input type="checkbox" id="start-turn" />
+                    <label id="start-turn-label" for="start-turn"></label>
+                    <p>Bot</p>
+                </fieldset>
+            </dialog>
+            <div id="game-container" class="game-container"></div>
+            <aside class="game-log">
+                <section class="scores">
+                    <div class="scoreboard">
+                        <p id="timer" class="scoreboard-time">0:00</p>
+                        <p class="scoreboard-title matches">Matches</p>
+                        <p>Human <span id="human-matches">0</span></p>
+                        <p>-</p>
+                        <p><span id="ai-matches">0</span> Bot</p>
+                        <p class="scoreboard-title pairs">Pairs</p>
+                        <p class="scoreboard-text pair">
+                            Human <span id="human-score">0</span>
+                        </p>
+                        <p class="scoreboar-text pair">-</p>
+                        <p class="scoreboard-text pair">
+                            <span id="ai-score">0</span> Bot
+                        </p>
+                    </div>
+                </section>
+                <h2>Game Log</h2>
+                <textarea id="game-log" readonly></textarea>
+            </aside>
+        </main>
+    </body>
+    <script src="index.js"></script>
+    <script
+        src="https://kit.fontawesome.com/8b0d39291b.js"
+        crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./service-worker.js").then(
+                    (registration) => {
+                        console.log(
+                            "ServiceWorker registration successful with scope: ",
+                            registration.scope
+                        );
+                    },
+                    (err) => {
+                        console.log("ServiceWorker registration failed: ", err);
+                    }
+                );
             });
         }
-   </script>
+    </script>
 </html>

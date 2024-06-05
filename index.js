@@ -22,6 +22,43 @@ let aiPairsFound = 0;
 let humanMatches = localStorage.getItem("humanWins") || 0;
 let aiMatches = localStorage.getItem("aiWins") || 0;
 let gameEnd = false;
+let gameSettings = document.getElementById("game-settings-btn");
+let gameSettingsContainer = document.getElementById("game-settings");
+let closeBtn = document.getElementById("close-settings");
+let AIDifficulty;
+let boardSize;
+let flipCards;
+let startTurn;
+
+gameSettings.addEventListener("click", function () {
+    if (gameSettingsContainer.open) {
+        gameSettingsContainer.close();
+    } else {
+        gameSettingsContainer.showModal();
+    }
+});
+
+closeBtn.addEventListener("click", function () {
+    closeSettings();
+});
+
+window.addEventListener("keypress", function (e) {
+    if (e.key === "Escape") {
+        closeSettings();
+    }
+});
+
+function closeSettings() {
+    gameSettingsContainer.close();
+}
+
+function applyGameSettings() {
+    boardSize = document.getElementById("board-size").value;
+    AIDifficulty = document.getElementById("difficulty").value;
+    flipCards = document.getElementById("flip-cards").checked;
+    startTurn = document.getElementById("start-turn").checked;
+}
+
 printMatchesScore(humanMatches, aiMatches);
 
 startBtn.addEventListener("click", function () {
@@ -29,20 +66,15 @@ startBtn.addEventListener("click", function () {
 });
 
 function startGame() {
+    applyGameSettings(boardSize, AIDifficulty, flipCards, startTurn);
     gameContainer.innerHTML = "";
-    let boardSize = document.getElementById("board-size").value;
-    AIDifficulty = document.getElementById("difficulty").value;
     let pickedImages = pickRandomImages(boardSize);
     let shuffledCards = shuffleCards(pickedImages);
-    let showCards = document.getElementById("flip-cards").checked;
-    let startTurn = document.getElementById("start-turn");
     iaMemory.clear();
-    console.log(iaMemory);
-    cards = generateCards(shuffledCards, showCards);    
+    cards = generateCards(shuffledCards, flipCards);    
     stopTimer();
     startTimer();
-    console.log(startTurn.checked);
-    aiTurn = startTurn.checked ? true : false;
+    aiTurn = startTurn;
     gameEnd = false;
     game(aiTurn, gameEnd);
 }
@@ -317,9 +349,9 @@ function checkMatch(flippedCards) {
             flippedCards.forEach((card) => {
                 card.classList.remove("flipped");
             });
+            aiTurn = !aiTurn;
         }
         flippedCards = [];
-        aiTurn = !aiTurn;
         game(aiTurn, gameEnd);
     }, 1000);
     aiTimeouts.push(matchTimeout);
