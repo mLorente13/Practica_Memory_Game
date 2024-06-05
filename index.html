@@ -27,33 +27,43 @@
                 <button id="close-settings">
                     <i class="fa-solid fa-times"></i>
                 </button>
-                <fieldset>
-                    <label for="board-size">Board Size:</label>
-                    <select id="board-size">
-                        <option value="12">4x3</option>
-                        <option value="16">4x4</option>
-                        <option value="20">4x5</option>
-                    </select>
-                </fieldset>
-                <fieldset class="game-option">
-                    <label for="difficulty">Difficulty:</label>
-                    <select id="difficulty">
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                    </select>
-                </fieldset>
-                <fieldset class="game-option">
-                    <p>Show cards:</p>
-                    <input type="checkbox" id="flip-cards" />
-                    <label id="flip-cards-label" for="flip-cards"></label>
-                </fieldset>
-                <fieldset class="game-option">
-                    <p>Human</p>
-                    <input type="checkbox" id="start-turn" />
-                    <label id="start-turn-label" for="start-turn"></label>
-                    <p>Bot</p>
-                </fieldset>
+                <section class="game-settings-container">
+                    <div class="game-setting">
+                        <label for="board-size">Board Size:</label>
+                        <select id="board-size">
+                            <option value="12">4x3</option>
+                            <option value="16">4x4</option>
+                            <option value="20">4x5</option>
+                        </select>
+                    </div>
+                    <div class="game-setting">
+                        <label for="difficulty">AI Difficulty:</label>
+                        <select id="difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="game-setting showCards">
+                        <p class="info-showCards">Show cards: <i class="fa-solid fa-circle-info"></i></p>
+                        <p class="showCards-info">Shows the cards to the user at the beginning of the game</p>
+                        <input type="checkbox" id="flip-cards" />
+                        <label id="flip-cards-label" for="flip-cards"></label>
+                    </div>
+                    <div class="game-setting startTurn">
+                        <p>Start Turn:</p>
+                        <p>Human</p>
+                        <input type="checkbox" id="start-turn" />
+                        <label id="start-turn-label" for="start-turn"></label>
+                        <p>Bot</p>
+                    </div>
+                    <div class="game-setting keepPlaying">
+                        <p class="info-keepPlaying ">Keep Playing: <i class="fa-solid fa-circle-info"></i></p>
+                        <p class="keepPlaying-info">The player continues playing if a pair is found</p>
+                        <input type="checkbox" id="keep-playing" />
+                        <label id="keep-playing-label" for="keep-playing"></label>
+                    </div>
+                </section>
             </dialog>
             <div id="game-container" class="game-container"></div>
             <aside class="game-log">
@@ -61,9 +71,9 @@
                     <div class="scoreboard">
                         <p id="timer" class="scoreboard-time">0:00</p>
                         <p class="scoreboard-title matches">Matches</p>
-                        <p>Human <span id="human-matches">0</span></p>
-                        <p>-</p>
-                        <p><span id="ai-matches">0</span> Bot</p>
+                        <p class="scoreboar-text matches">Human <span id="human-matches">0</span></p>
+                        <p class="scoreboar-text matches">-</p>
+                        <p class="scoreboar-text matches"><span id="ai-matches">0</span> Bot</p>
                         <p class="scoreboard-title pairs">Pairs</p>
                         <p class="scoreboard-text pair">
                             Human <span id="human-score">0</span>
