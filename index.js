@@ -39,6 +39,11 @@ gameSettings.addEventListener("click", function () {
     }
 });
 
+
+startBtn.addEventListener("click", function () {
+    startGame();
+});
+
 closeBtn.addEventListener("click", function () {
     closeSettings();
 });
@@ -47,6 +52,18 @@ window.addEventListener("keypress", function (e) {
     if (e.key === "Escape") {
         closeSettings();
     }
+});
+
+printMatchesScore(humanMatches, aiMatches);
+
+resetBtn.addEventListener("click", function () {
+    gameContainer.innerHTML = "";
+    resetScores();
+    aiTimeouts.forEach(timeout => clearTimeout(timeout));
+    aiTimeouts = [];
+    iaMemory.clear();
+    aiTurn = false;
+    startBtn.disabled = false;
 });
 
 function closeSettings() {
@@ -61,12 +78,6 @@ function applyGameSettings() {
     keepPlaying = document.getElementById("keep-playing").checked;
 }
 
-printMatchesScore(humanMatches, aiMatches);
-
-startBtn.addEventListener("click", function () {
-    startGame();
-});
-
 function startGame() {
     applyGameSettings(boardSize, AIDifficulty, flipCards, startTurn);
     gameContainer.innerHTML = "";
@@ -74,8 +85,8 @@ function startGame() {
     let shuffledCards = shuffleCards(pickedImages);
     iaMemory.clear();
     cards = generateCards(shuffledCards, flipCards);
-    stopTimer();
     startTimer();
+    resetScores();
     aiTurn = document.getElementById("start-turn").checked;
     gameEnd = false;
     if (flipCards) {
@@ -228,8 +239,11 @@ function pickRandomCard(cards, pickedCards) {
 }
 // Scoreboard
 function startTimer() {
-    let time = "0:00";
-    let timer = document.getElementById("timer");
+    let timer = document.getElementById("timer"),
+        time = "0:00";
+
+    timer.textContent = time;
+    clearInterval(interval);
     interval = setInterval(() => {
         let minutes = parseInt(time.split(":")[0]);
         let seconds = parseInt(time.split(":")[1]);
@@ -241,13 +255,6 @@ function startTimer() {
         time = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
         timer.textContent = time;
     }, 1000);
-}
-
-function stopTimer() {
-    let timer = document.getElementById("timer");
-    clearInterval(interval);
-    startBtn.disabled = false;
-    timer.textContent = "0:00";
 }
 
 function resetScores() {
@@ -272,18 +279,10 @@ function printMatchesScore(humanMatches, aiMatches) {
     aiMatchesScore.textContent = aiMatches;
 }
 
-resetBtn.addEventListener("click", function () {
-    stopTimer();
-    gameContainer.innerHTML = "";
-    aiTimeouts.forEach(timeout => clearTimeout(timeout));
-    stopTimer();
-    aiTimeouts = [];
-    iaMemory.clear();
-    aiTurn = false;
-    startBtn.disabled = false;
-});
-
 function flipCard(card) {
+    if (card.classList.contains("flipped") || card.classList.contains("matched")) {
+        return;
+    }
     card.classList.add("flipped");
     let flippedCards = document.querySelectorAll(".flipped");
     if (flippedCards.length === 2) {
@@ -315,13 +314,21 @@ function saveCardOnMemory(card) {
 }
 
 function checkMemoryFailure(difficulty) {
-    if (difficulty === "easy") {
-        return Math.random() < 0.5;
-    } else if (difficulty === "medium") {
-        return Math.random() < 0.3;
-    } else if (difficulty === "hard") {
-        return false;
+    switch (difficulty) {
+        case "easy":
+            return Math.random() < 0.5;
+        case "medium":
+            return Math.random() < 0.3;
+        case "hard":
+            return false;
     }
+    // if (difficulty === "easy") {
+    //     return Math.random() < 0.5;
+    // } else if (difficulty === "medium") {
+    //     return Math.random() < 0.3;
+    // } else if (difficulty === "hard") {
+    //     return false;
+    // }
 }
 
 function removeCardsFromMemory(card) {
@@ -336,26 +343,21 @@ function checkMatch(flippedCards) {
     let secondCard = flippedCards[1];
     let matchTimeout = setTimeout(() => {
         if (firstCard.innerHTML === secondCard.innerHTML) {
-            if (!keepPlaying) {
-                aiTurn = !aiTurn;
-            }
             flippedCards.forEach((card) => {
                 removeCardsFromMemory(card);
                 card.classList.add("matched");
                 card.classList.remove("flipped");
-                setTimeout(() => {
-                    card.removeEventListener("click", function () {
-                        flipCard(card);
-                    });
-                }, 3000);
             });
             if (aiTurn) {
                 aiPairsFound++;
             } else {
                 humanPairsFound++;
             }
+            if (!keepPlaying) {
+                aiTurn = !aiTurn;
+            }
             printPairsScore(humanPairsFound, aiPairsFound);
-            addPlayToGameLog(firstCard, "match", aiTurn ? "AI" : "Human");
+            addPlayToGameLog(firstCard, aiTurn ? "AI" : "Human");
             gameEnd = checkGameEnd();
             if (gameEnd) {
                 return;
@@ -373,17 +375,20 @@ function checkMatch(flippedCards) {
     aiTimeouts.push(matchTimeout);
 }
 
-function addPlayToGameLog(card, play, player) {
+function addPlayToGameLog(card, player) {
     let cardAlt = card.querySelector("img").alt;
     let gameLog = document.getElementById("game-log");
-    gameLog.textContent += `${player} played ${play} with ${cardAlt}\n`;
+    gameLog.textContent += `${timer.textContent}: ${player} found ${cardAlt} pair\n`;
 }
 
 function checkGameEnd() {
     let matchedCards = document.querySelectorAll(".matched");
+    let humanWin;
+    clearInterval(interval);
     if (matchedCards.length === cards.length) {
         if (humanPairsFound > aiPairsFound) {
             localStorage.setItem("humanWins", ++humanMatches);
+            humanWin = true;
         } else if (aiPairsFound > humanPairsFound){
             localStorage.setItem("aiWins", ++aiMatches);
         }
@@ -391,13 +396,32 @@ function checkGameEnd() {
         aiPairsFound = 0;
         printMatchesScore(humanMatches, aiMatches);
         printPairsScore(humanPairsFound, aiPairsFound);
-        stopTimer();
-        confetti({
-            particleCount: 1000,
-            spread: 150,
-            origin: { y: 0.6 },
-        });
+        printGameEndWindow(humanWin);
         return true;
     }
     return false;
+}
+
+function printGameEndWindow(humanWin) {
+    let gameEndWindow = document.getElementById("game-end");
+    let gameEndMessage = document.getElementById("game-end-title");
+    let gameTime = document.getElementById("game-time");
+    gameTime.textContent = `Time: ${timer.textContent}`;
+    let gameEndBtn = document.getElementById("game-end-btn");
+    if (humanWin == undefined) {
+        gameEndMessage.textContent = "It's a Draw! 🧍‍♂️ 🤝 🤖";
+    } else {
+        gameEndMessage.textContent = humanWin ? "You Win! 🏆" : "You Lose!";
+    }
+    gameEndWindow.showModal();
+    gameEndBtn.addEventListener("click", function () {
+        gameEndWindow.close();
+    });
+    if (humanWin) {
+        confetti({
+            particleCount: 1000,
+            spread: 350,
+            origin: { y: 0.6 },
+        });
+    }
 }
