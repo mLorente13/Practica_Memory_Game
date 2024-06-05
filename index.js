@@ -169,13 +169,13 @@ function game(isAiTurn, gameEnd) {
 function aiPlay(cards, pickedCards) {
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
     let memoryContainsCard = checkMemoryForCard(cards, pickedCards, memoryContainsPair);
-    if (!memoryContainsPair) {
-        pickedCards.push(pickRandomCard(cards, pickedCards));
-        pickedCards.push(pickRandomCard(cards, pickedCards));
-    } else if (memoryContainsCard) {
-        pickedCards.push(pickRandomCard(cards, pickedCards));
+    if (memoryContainsCard) {
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
+    } else if (!memoryContainsCard && !memoryContainsPair) {
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
+        pickedCards.push(pickRandomCard(cards, pickedCards, memoryContainsCard));
     }
-    
+
     flipCard(pickedCards[0]);
     let flipTimeout = setTimeout(() => {
         flipCard(pickedCards[1]);
@@ -184,40 +184,37 @@ function aiPlay(cards, pickedCards) {
 }
 
 function checkMemoryForPair(cards, pickedCards) {
-    let memoryContainsPair = false;
     let memoryKeys = Array.from(iaMemory.keys());
-    memoryKeys.forEach((key) => {
-        let values = iaMemory.get(key);
+    for (let i = 0; i < memoryKeys.length; i++) {
+        let values = iaMemory.get(memoryKeys[i]);
         if (values.length === 2) {
-            let firstCard = cards[values[0]];
-            let secondCard = cards[values[1]];
-            if (!firstCard.classList.contains("flipped") && !firstCard.classList.contains("matched")) {
-                pickedCards.push(firstCard);
+            let card1 = cards[values[0]];
+            let card2 = cards[values[1]];
+            if (!card1.classList.contains("flipped") && !card1.classList.contains("matched") && !card2.classList.contains("flipped") && !card2.classList.contains("matched")) {
+                pickedCards.push(card1);
+                pickedCards.push(card2);
+                iaMemory.delete(memoryKeys[i]);
+                return true;
             }
-            if (!secondCard.classList.contains("flipped") && !secondCard.classList.contains("matched")) {
-                pickedCards.push(secondCard);
-            }
-            memoryContainsPair = true;
-            iaMemory.delete(key);
         }
-    });
-    return memoryContainsPair;
+    }
+    return false;
 }
 
 function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
     let memoryContainsCard = false;
     if (!memoryContainsPair) {
         let memoryKeys = Array.from(iaMemory.keys());
-        memoryKeys.forEach((key) => {
-            let values = iaMemory.get(key);
+        for (let i = 0; i < memoryKeys.length; i++) {
+            let values = iaMemory.get(memoryKeys[i]);
             if (values.length === 1) {
                 let card = cards[values[0]];
                 if (!card.classList.contains("flipped") && !card.classList.contains("matched")) {
                     pickedCards.push(card);
-                    memoryContainsCard = true;
+                    return true;
                 }
             }
-        });
+        }
     }
     return memoryContainsCard;
 }
