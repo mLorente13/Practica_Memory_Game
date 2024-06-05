@@ -231,15 +231,11 @@ function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
 }
 // TODO: Fix filter cards remove cards that are not in memory
 function pickRandomCard(cards, pickedCards) {
-    console.log(iaMemory)
     cards = [...cards].filter((card) => !card.classList.contains("flipped"))
         .filter((card) => !card.classList.contains("matched"))
         .filter((card) => pickedCards.indexOf(card) === -1)
-        .filter((card) => !iaMemory.has(card.querySelector("img").alt) && !iaMemory.has(card.dataset.position));
-    cards.forEach((card) => {
-        console.log(card);
-    });
-
+        .filter((card) => !iaMemory.has(card.dataset.position));
+    
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
