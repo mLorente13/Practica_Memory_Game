@@ -176,7 +176,7 @@ function game(isAiTurn, gameEnd) {
     }, 500); 
     aiTimeouts.push(gameTimeout);
 }
-
+// TODO: Remove cards that are in memory from the cards array
 function aiPlay(cards, pickedCards) {
     let memoryContainsPair = checkMemoryForPair(cards, pickedCards);
     let memoryContainsCard = checkMemoryForCard(cards, pickedCards, memoryContainsPair);
@@ -231,9 +231,15 @@ function checkMemoryForCard(cards, pickedCards, memoryContainsPair) {
 }
 
 function pickRandomCard(cards, pickedCards) {
-    cards = [...cards].filter((card) => !card.classList.contains("flipped"));
-    cards = [...cards].filter((card) => !card.classList.contains("matched"));
-    cards = [...cards].filter((card) => pickedCards.indexOf(card) === -1);
+    cards = [...cards].filter((card) => !card.classList.contains("flipped"))
+        .filter((card) => !card.classList.contains("matched"))
+        .filter((card) => pickedCards.indexOf(card) === -1)
+        .filter((card) => !iaMemory.has(card.querySelector("img").alt) && !iaMemory.has(card.dataset.position));
+    cards.forEach((card) => {
+        console.log(card);
+    });
+
+    console.log(iaMemory)
     let randomIndex = Math.floor(Math.random() * cards.length);
     return cards[randomIndex];
 }
