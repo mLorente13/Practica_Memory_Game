@@ -386,8 +386,8 @@ function addPlayToGameLog(card, player) {
 function checkGameEnd() {
     let matchedCards = document.querySelectorAll(".matched");
     let humanWin;
-    clearInterval(interval);
     if (matchedCards.length === cards.length) {
+        clearInterval(interval);
         if (humanPairsFound > aiPairsFound) {
             localStorage.setItem("humanWins", ++humanMatches);
             humanWin = true;
